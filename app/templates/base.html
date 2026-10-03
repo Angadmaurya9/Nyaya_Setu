@@ -1,0 +1,234 @@
+{# ============================================================
+   NyayaSetu — Base Layout Template (app/templates/base.html)
+   All other templates extend this file.
+
+   Blocks available for child templates:
+     - title         : browser tab title (plain text)
+     - meta_description : page meta description
+     - extra_head    : extra <link> or <meta> tags in <head>
+     - content       : main page body content
+     - extra_scripts : extra <script> tags before </body>
+   ============================================================ #}
+<!DOCTYPE html>
+<html lang="{{ lang }}" data-theme="light" id="html-root">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="{% block meta_description %}NyayaSetu — Bridging Citizens and Justice. Free legal information and government scheme guidance for Indian citizens.{% endblock %}" />
+
+  {# ── Security headers via meta (complement server-side headers in Phase 2) ── #}
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+
+  <title>{% block title %}{{ app_name }}{% endblock %} | {{ app_name }}</title>
+
+  {# ── Google Fonts — Poppins (UI) + Noto Sans Devanagari (Hindi text) ── #}
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  {# ── Main stylesheet ── #}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+
+  {% block extra_head %}{% endblock %}
+</head>
+
+<body>
+  {# ══════════════════════════════════════════════
+     SKIP NAVIGATION (accessibility)
+  ══════════════════════════════════════════════ #}
+  <a href="#main-content" class="skip-link">
+    {% if lang == 'hi' %}मुख्य सामग्री पर जाएं{% else %}Skip to main content{% endif %}
+  </a>
+
+  {# ══════════════════════════════════════════════
+     NAVIGATION BAR
+  ══════════════════════════════════════════════ #}
+  <header class="navbar" role="banner">
+    <div class="container navbar__inner">
+
+      {# Logo / Brand #}
+      <a href="{{ url_for('main.index') }}" class="navbar__brand" aria-label="{{ app_name }} Home">
+        <span class="navbar__logo-icon" aria-hidden="true">⚖️</span>
+        <span class="navbar__brand-text">{{ app_name }}</span>
+      </a>
+
+      {# Mobile hamburger button #}
+      <button class="navbar__toggle" id="nav-toggle" aria-expanded="false" aria-controls="nav-menu" aria-label="Toggle navigation">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+
+      {# Nav links #}
+      <nav class="navbar__menu" id="nav-menu" role="navigation" aria-label="Main navigation">
+        <ul class="navbar__list">
+          <li class="navbar__item">
+            <a href="{{ url_for('main.index') }}"
+               class="navbar__link {% if current_path == '/' %}navbar__link--active{% endif %}">
+              {% if lang == 'hi' %}होम{% else %}Home{% endif %}
+            </a>
+          </li>
+          <li class="navbar__item">
+            <a href="{{ url_for('main.about') }}"
+               class="navbar__link {% if current_path == '/about' %}navbar__link--active{% endif %}">
+              {% if lang == 'hi' %}हमारे बारे में{% else %}About{% endif %}
+            </a>
+          </li>
+          <li class="navbar__item">
+            <a href="{{ url_for('main.schemes') }}"
+               class="navbar__link {% if current_path == '/schemes' %}navbar__link--active{% endif %}">
+              {% if lang == 'hi' %}योजनाएं{% else %}Schemes{% endif %}
+            </a>
+          </li>
+          <li class="navbar__item">
+            <a href="{{ url_for('main.resources') }}"
+               class="navbar__link {% if current_path == '/resources' %}navbar__link--active{% endif %}">
+              {% if lang == 'hi' %}संसाधन{% else %}Resources{% endif %}
+            </a>
+          </li>
+          <li class="navbar__item">
+            <a href="{{ url_for('main.issue') }}"
+               class="navbar__link {% if current_path == '/issue' %}navbar__link--active{% endif %}">
+              {% if lang == 'hi' %}समस्या बताएं{% else %}Report Issue{% endif %}
+            </a>
+          </li>
+          <li class="navbar__item">
+            <a href="{{ url_for('contact.contact') }}"
+               class="navbar__link {% if current_path == '/contact' %}navbar__link--active{% endif %}">
+              {% if lang == 'hi' %}संपर्क{% else %}Contact{% endif %}
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      {# Controls: Language + Theme #}
+      <div class="navbar__controls">
+
+        {# Language selector #}
+        <div class="lang-selector" aria-label="Language selector">
+          <a href="?lang=en{% if current_path != '/' %}&{% endif %}"
+             class="lang-btn {% if lang == 'en' %}lang-btn--active{% endif %}"
+             aria-label="Switch to English"
+             aria-current="{{ 'true' if lang == 'en' else 'false' }}">EN</a>
+          <span class="lang-divider" aria-hidden="true">|</span>
+          <a href="?lang=hi{% if current_path != '/' %}&{% endif %}"
+             class="lang-btn {% if lang == 'hi' %}lang-btn--active{% endif %}"
+             aria-label="हिन्दी में स्विच करें"
+             aria-current="{{ 'true' if lang == 'hi' else 'false' }}">HI</a>
+        </div>
+
+        {# Dark/Light theme toggle #}
+        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode" title="Toggle theme">
+          <span class="theme-toggle__icon theme-toggle__icon--sun" aria-hidden="true">☀️</span>
+          <span class="theme-toggle__icon theme-toggle__icon--moon" aria-hidden="true">🌙</span>
+        </button>
+
+      </div>{# /.navbar__controls #}
+
+    </div>{# /.container #}
+  </header>
+
+  {# ══════════════════════════════════════════════
+     FLASH MESSAGES
+  ══════════════════════════════════════════════ #}
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flash-container container" role="alert" aria-live="polite">
+        {% for category, message in messages %}
+          <div class="flash flash--{{ category }}">
+            <span>{{ message }}</span>
+            <button class="flash__close" aria-label="Close" onclick="this.parentElement.remove()">✕</button>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  {# ══════════════════════════════════════════════
+     MAIN CONTENT
+  ══════════════════════════════════════════════ #}
+  <main id="main-content" class="main-content" role="main">
+    {% block content %}{% endblock %}
+  </main>
+
+  {# ══════════════════════════════════════════════
+     FOOTER
+  ══════════════════════════════════════════════ #}
+  <footer class="footer" role="contentinfo">
+    <div class="container footer__inner">
+
+      <div class="footer__brand">
+        <span class="footer__logo-icon" aria-hidden="true">⚖️</span>
+        <span class="footer__brand-name">{{ app_name }}</span>
+        <p class="footer__tagline">
+          {% if lang == 'hi' %}नागरिकों और न्याय के बीच सेतु{% else %}Bridging Citizens and Justice{% endif %}
+        </p>
+      </div>
+
+      <nav class="footer__links" aria-label="Footer navigation">
+        <div class="footer__link-group">
+          <h3 class="footer__link-heading">
+            {% if lang == 'hi' %}पृष्ठ{% else %}Pages{% endif %}
+          </h3>
+          <ul>
+            <li><a href="{{ url_for('main.index') }}">{% if lang == 'hi' %}होम{% else %}Home{% endif %}</a></li>
+            <li><a href="{{ url_for('main.about') }}">{% if lang == 'hi' %}हमारे बारे में{% else %}About{% endif %}</a></li>
+            <li><a href="{{ url_for('main.schemes') }}">{% if lang == 'hi' %}योजनाएं{% else %}Schemes{% endif %}</a></li>
+            <li><a href="{{ url_for('main.resources') }}">{% if lang == 'hi' %}संसाधन{% else %}Resources{% endif %}</a></li>
+          </ul>
+        </div>
+        <div class="footer__link-group">
+          <h3 class="footer__link-heading">
+            {% if lang == 'hi' %}कानूनी{% else %}Legal{% endif %}
+          </h3>
+          <ul>
+            <li><a href="{{ url_for('legal.disclaimer') }}">{% if lang == 'hi' %}अस्वीकरण{% else %}Disclaimer{% endif %}</a></li>
+            <li><a href="{{ url_for('legal.privacy') }}">{% if lang == 'hi' %}गोपनीयता नीति{% else %}Privacy Policy{% endif %}</a></li>
+            <li><a href="{{ url_for('legal.terms') }}">{% if lang == 'hi' %}उपयोग की शर्तें{% else %}Terms of Use{% endif %}</a></li>
+            <li><a href="{{ url_for('contact.contact') }}">{% if lang == 'hi' %}संपर्क{% else %}Contact{% endif %}</a></li>
+          </ul>
+        </div>
+      </nav>
+
+    </div>
+
+    {# Disclaimer notice — shown on every page #}
+    <div class="footer__disclaimer">
+      <div class="container">
+        <p>
+          {% if lang == 'hi' %}
+            ⚠️ <strong>अस्वीकरण:</strong> NyayaSetu केवल सामान्य कानूनी जानकारी प्रदान करता है।
+            यह कानूनी सलाह नहीं है और वकील-मुवक्किल संबंध नहीं बनाता।
+            कानूनी सलाह के लिए किसी योग्य अधिवक्ता से मिलें।
+          {% else %}
+            ⚠️ <strong>Disclaimer:</strong> NyayaSetu provides general legal information only.
+            This is not legal advice and does not create a lawyer–client relationship.
+            Consult a qualified advocate for advice on your specific situation.
+          {% endif %}
+        </p>
+      </div>
+    </div>
+
+    <div class="footer__bottom">
+      <div class="container">
+        <p>
+          &copy; {{ 2025 }} {{ app_name }}.
+          {% if lang == 'hi' %}
+            BCA परियोजना — केवल शैक्षिक उद्देश्यों के लिए।
+          {% else %}
+            BCA Project — For educational purposes only.
+          {% endif %}
+        </p>
+      </div>
+    </div>
+
+  </footer>
+
+  {# ══════════════════════════════════════════════
+     SCRIPTS
+  ══════════════════════════════════════════════ #}
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  {% block extra_scripts %}{% endblock %}
+
+</body>
+</html>

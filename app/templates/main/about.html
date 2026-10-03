@@ -1,0 +1,124 @@
+{# ============================================================
+   NyayaSetu — About Page (app/templates/main/about.html)
+   ============================================================ #}
+{% extends "base.html" %}
+
+{% block title %}{% if lang == 'hi' %}हमारे बारे में{% else %}About{% endif %}{% endblock %}
+{% block meta_description %}
+  {% if lang == 'hi' %}NyayaSetu के बारे में जानें — हमारा मिशन, दृष्टि और प्रौद्योगिकी स्टैक।
+  {% else %}Learn about NyayaSetu — our mission, vision, and technology stack.{% endif %}
+{% endblock %}
+
+{% block content %}
+
+<section class="page-hero section" aria-labelledby="about-heading">
+  <div class="container">
+    <h1 class="page-hero__title" id="about-heading">
+      {% if lang == 'hi' %}हमारे बारे में{% else %}About NyayaSetu{% endif %}
+    </h1>
+    <p class="page-hero__subtitle">
+      {% if lang == 'hi' %}
+        न्याय तक पहुंच हर नागरिक का अधिकार है।
+      {% else %}
+        Access to justice is every citizen's right.
+      {% endif %}
+    </p>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="mission-heading">
+  <div class="container prose">
+
+    <h2 id="mission-heading">
+      {% if lang == 'hi' %}हमारा मिशन{% else %}Our Mission{% endif %}
+    </h2>
+    <p>
+      {% if lang == 'hi' %}
+        NyayaSetu का लक्ष्य है कि भारत के हर नागरिक — विशेषकर वे जो आर्थिक रूप से कमजोर हैं
+        या दूरदराज के क्षेत्रों में रहते हैं — को सरल भाषा में कानूनी जानकारी मिल सके।
+        हम मानते हैं कि कानूनी जागरूकता एक मौलिक नागरिक अधिकार है।
+      {% else %}
+        NyayaSetu's mission is to make legal information accessible to every Indian citizen —
+        especially those who are economically marginalised or live in remote areas — in plain,
+        understandable language. We believe legal awareness is a fundamental civic right.
+      {% endif %}
+    </p>
+
+    <h2>{% if lang == 'hi' %}समस्या{% else %}The Problem{% endif %}</h2>
+    <p>
+      {% if lang == 'hi' %}
+        भारत में लाखों नागरिक अपने कानूनी अधिकारों से अनजान हैं। जटिल कानूनी भाषा,
+        वकीलों की ऊंची फीस और जागरूकता की कमी न्याय तक पहुंच में बाधा डालती है।
+        NyayaSetu इस खाई को पाटने का प्रयास करता है।
+      {% else %}
+        Millions of Indian citizens are unaware of their legal rights. Complex legal language,
+        high advocate fees, and lack of awareness create barriers to justice.
+        NyayaSetu attempts to bridge this gap.
+      {% endif %}
+    </p>
+
+    <h2>{% if lang == 'hi' %}प्रौद्योगिकी स्टैक{% else %}Technology Stack{% endif %}</h2>
+    <div class="tech-grid">
+      <div class="tech-card">
+        <span class="tech-card__icon">🐍</span>
+        <span class="tech-card__name">Python 3.14</span>
+        <span class="tech-card__desc">{% if lang == 'hi' %}बैकएंड भाषा{% else %}Backend language{% endif %}</span>
+      </div>
+      <div class="tech-card">
+        <span class="tech-card__icon">🌶️</span>
+        <span class="tech-card__name">Flask 3</span>
+        <span class="tech-card__desc">{% if lang == 'hi' %}वेब फ्रेमवर्क{% else %}Web framework{% endif %}</span>
+      </div>
+      <div class="tech-card">
+        <span class="tech-card__icon">🗄️</span>
+        <span class="tech-card__name">SQLite / SQLAlchemy</span>
+        <span class="tech-card__desc">{% if lang == 'hi' %}डेटाबेस{% else %}Database ORM{% endif %}</span>
+      </div>
+      <div class="tech-card">
+        <span class="tech-card__icon">🎨</span>
+        <span class="tech-card__name">CSS Custom Properties</span>
+        <span class="tech-card__desc">{% if lang == 'hi' %}लाइट/डार्क थीम{% else %}Light/dark theming{% endif %}</span>
+      </div>
+      <div class="tech-card">
+        <span class="tech-card__icon">📝</span>
+        <span class="tech-card__name">Jinja2</span>
+        <span class="tech-card__desc">{% if lang == 'hi' %}टेम्पलेट इंजन{% else %}Template engine{% endif %}</span>
+      </div>
+      <div class="tech-card">
+        <span class="tech-card__icon">🤖</span>
+        <span class="tech-card__name">Gemini API</span>
+        <span class="tech-card__desc">{% if lang == 'hi' %}Phase 2 — AI विश्लेषण{% else %}Phase 2 — AI analysis{% endif %}</span>
+      </div>
+    </div>
+
+    <h2>{% if lang == 'hi' %}Phase 1 की विशेषताएं{% else %}Phase 1 Features{% endif %}</h2>
+    <ul>
+      <li>{% if lang == 'hi' %}उत्तरदायी होमपेज और सूचना पृष्ठ{% else %}Responsive homepage and informational pages{% endif %}</li>
+      <li>{% if lang == 'hi' %}लाइट / डार्क थीम{% else %}Light / dark theme toggle{% endif %}</li>
+      <li>{% if lang == 'hi' %}हिन्दी / अंग्रेजी भाषा चयनकर्ता{% else %}Hindi / English language selector{% endif %}</li>
+      <li>{% if lang == 'hi' %}सरकारी योजनाओं का स्थैतिक संग्रह{% else %}Static collection of government schemes{% endif %}</li>
+      <li>{% if lang == 'hi' %}क्यूरेटेड कानूनी संसाधन लिंक{% else %}Curated legal resource links{% endif %}</li>
+      <li>{% if lang == 'hi' %}SQLite डेटाबेस आधार{% else %}SQLite database foundation{% endif %}</li>
+      <li>{% if lang == 'hi' %}संपर्क फ़ॉर्म (सत्यापन के साथ){% else %}Contact form with validation{% endif %}</li>
+    </ul>
+
+    <h2>{% if lang == 'hi' %}अस्वीकरण{% else %}Disclaimer{% endif %}</h2>
+    <div class="callout callout--warning">
+      <span class="callout__icon" aria-hidden="true">⚠️</span>
+      <div class="callout__body">
+        <p>
+          {% if lang == 'hi' %}
+            यह एक BCA छात्र परियोजना है जो शैक्षिक उद्देश्यों के लिए बनाई गई है।
+            यहाँ दी गई कानूनी जानकारी सामान्य है और पेशेवर कानूनी सलाह का विकल्प नहीं है।
+          {% else %}
+            This is a BCA student project created for educational purposes.
+            Legal information provided here is general and not a substitute for professional legal advice.
+          {% endif %}
+        </p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+{% endblock %}

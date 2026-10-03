@@ -1,0 +1,96 @@
+{# ============================================================
+   NyayaSetu — Privacy Policy (app/templates/legal/privacy.html)
+   ============================================================ #}
+{% extends "base.html" %}
+
+{% block title %}{% if lang == 'hi' %}गोपनीयता नीति{% else %}Privacy Policy{% endif %}{% endblock %}
+
+{% block content %}
+<section class="page-hero section">
+  <div class="container">
+    <h1 class="page-hero__title">
+      {% if lang == 'hi' %}गोपनीयता नीति{% else %}Privacy Policy{% endif %}
+    </h1>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container container--narrow prose">
+
+    <p class="text-muted">
+      {% if lang == 'hi' %}अंतिम अपडेट: अक्टूबर 2025{% else %}Last updated: October 2025{% endif %}
+    </p>
+
+    <h2>{% if lang == 'hi' %}हम क्या डेटा संग्रहित करते हैं{% else %}What Data We Collect{% endif %}</h2>
+    <p>
+      {% if lang == 'hi' %}
+        NyayaSetu गोपनीयता को सर्वोच्च प्राथमिकता देता है। Phase 1 में:
+      {% else %}
+        NyayaSetu treats privacy as a top priority. In Phase 1:
+      {% endif %}
+    </p>
+    <ul>
+      <li>
+        {% if lang == 'hi' %}
+          हम केवल गुमनाम पृष्ठ विज़िट डेटा (path, भाषा, timestamp) संग्रहित करते हैं।
+        {% else %}
+          We store only anonymous page visit data (path, language, timestamp).
+        {% endif %}
+      </li>
+      <li>
+        {% if lang == 'hi' %}
+          हम कोई IP पता, नाम, ईमेल, या व्यक्तिगत पहचान डेटा संग्रहित नहीं करते।
+        {% else %}
+          We do not store any IP address, name, email, or personal identifying data.
+        {% endif %}
+      </li>
+      <li>
+        {% if lang == 'hi' %}
+          आपकी कानूनी समस्या का विवरण हमारे सर्वर पर कभी संग्रहित नहीं किया जाता।
+        {% else %}
+          Your legal issue description is never stored on our servers.
+        {% endif %}
+      </li>
+      <li>
+        {% if lang == 'hi' %}
+          हम कोई ट्रैकिंग कुकीज़ या तृतीय-पक्ष विज्ञापन नहीं चलाते।
+        {% else %}
+          We do not use tracking cookies or third-party advertising.
+        {% endif %}
+      </li>
+    </ul>
+
+    <h2>{% if lang == 'hi' %}सत्र कुकीज़{% else %}Session Cookies{% endif %}</h2>
+    <p>
+      {% if lang == 'hi' %}
+        हम एक छोटी सत्र कुकी का उपयोग करते हैं जो केवल आपकी भाषा प्राथमिकता को याद रखती है।
+        यह कुकी ब्राउज़र बंद करने पर स्वतः समाप्त हो जाती है।
+      {% else %}
+        We use a minimal session cookie that only remembers your language preference.
+        This cookie expires automatically when you close your browser.
+      {% endif %}
+    </p>
+
+    <h2>{% if lang == 'hi' %}डेटा सुरक्षा{% else %}Data Security{% endif %}</h2>
+    <p>
+      {% if lang == 'hi' %}
+        हम उद्योग-मानक सुरक्षा प्रथाओं का पालन करते हैं। API कुंजियां और रहस्य
+        पर्यावरण चर में संग्रहित हैं, कभी कोड में नहीं।
+      {% else %}
+        We follow industry-standard security practices. API keys and secrets are
+        stored in environment variables, never in code or version control.
+      {% endif %}
+    </p>
+
+    <h2>{% if lang == 'hi' %}संपर्क करें{% else %}Contact{% endif %}</h2>
+    <p>
+      {% if lang == 'hi' %}
+        गोपनीयता संबंधी प्रश्नों के लिए <a href="{{ url_for('contact.contact') }}">संपर्क फ़ॉर्म</a> का उपयोग करें।
+      {% else %}
+        For privacy-related queries, use our <a href="{{ url_for('contact.contact') }}">contact form</a>.
+      {% endif %}
+    </p>
+
+  </div>
+</section>
+{% endblock %}

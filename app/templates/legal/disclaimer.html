@@ -1,0 +1,87 @@
+{# ============================================================
+   NyayaSetu — Legal Disclaimer (app/templates/legal/disclaimer.html)
+   ============================================================ #}
+{% extends "base.html" %}
+
+{% block title %}{% if lang == 'hi' %}कानूनी अस्वीकरण{% else %}Legal Disclaimer{% endif %}{% endblock %}
+
+{% block content %}
+<section class="page-hero section">
+  <div class="container">
+    <h1 class="page-hero__title">
+      {% if lang == 'hi' %}कानूनी अस्वीकरण{% else %}Legal Disclaimer{% endif %}
+    </h1>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container container--narrow prose">
+
+    <p class="text-muted">
+      {% if lang == 'hi' %}अंतिम अपडेट: अक्टूबर 2025{% else %}Last updated: October 2025{% endif %}
+    </p>
+
+    <div class="callout callout--warning">
+      <span class="callout__icon" aria-hidden="true">⚠️</span>
+      <div class="callout__body">
+        <strong>
+          {% if lang == 'hi' %}यह कानूनी सलाह नहीं है{% else %}This is not legal advice{% endif %}
+        </strong>
+        <p>
+          {% if lang == 'hi' %}
+            NyayaSetu पर उपलब्ध सभी जानकारी केवल सामान्य शैक्षिक और सूचनात्मक उद्देश्यों के लिए है।
+          {% else %}
+            All information available on NyayaSetu is for general educational and informational purposes only.
+          {% endif %}
+        </p>
+      </div>
+    </div>
+
+    <h2>{% if lang == 'hi' %}1. सामान्य सूचना केवल{% else %}1. General Information Only{% endif %}</h2>
+    <p>
+      {% if lang == 'hi' %}
+        NyayaSetu भारतीय कानून के बारे में सामान्य जानकारी प्रदान करता है।
+        यह जानकारी किसी भी रूप में कानूनी सलाह नहीं है और न ही इसे ऐसे समझा जाना चाहिए।
+        हम वकील नहीं हैं और यह प्लेटफ़ॉर्म वकील-मुवक्किल संबंध नहीं बनाता।
+      {% else %}
+        NyayaSetu provides general information about Indian law.
+        This information does not constitute legal advice in any form and should not be construed as such.
+        We are not lawyers and this platform does not create a lawyer–client relationship.
+      {% endif %}
+    </p>
+
+    <h2>{% if lang == 'hi' %}2. सटीकता की कोई गारंटी नहीं{% else %}2. No Guarantee of Accuracy{% endif %}</h2>
+    <p>
+      {% if lang == 'hi' %}
+        हम जानकारी को सटीक और अद्यतन रखने का प्रयास करते हैं, लेकिन कानून बदलते रहते हैं।
+        किसी भी कानूनी निर्णय से पहले किसी योग्य अधिवक्ता से परामर्श करें।
+      {% else %}
+        We strive to keep information accurate and up to date, but laws change frequently.
+        Always consult a qualified advocate before making any legal decision.
+      {% endif %}
+    </p>
+
+    <h2>{% if lang == 'hi' %}3. बाहरी लिंक{% else %}3. External Links{% endif %}</h2>
+    <p>
+      {% if lang == 'hi' %}
+        NyayaSetu तृतीय-पक्ष वेबसाइटों से लिंक करता है। हम उन वेबसाइटों की सामग्री के लिए
+        जिम्मेदार नहीं हैं।
+      {% else %}
+        NyayaSetu links to third-party websites. We are not responsible for the content of those websites.
+      {% endif %}
+    </p>
+
+    <h2>{% if lang == 'hi' %}4. पेशेवर सहायता लें{% else %}4. Seek Professional Help{% endif %}</h2>
+    <p>
+      {% if lang == 'hi' %}
+        गंभीर कानूनी मामलों के लिए, कृपया NALSA (15100) से संपर्क करें या अपने जिले के
+        जिला विधि सेवा प्राधिकरण (DLSA) से मुफ्त कानूनी सहायता प्राप्त करें।
+      {% else %}
+        For serious legal matters, please contact NALSA (15100) or visit your district's
+        District Legal Services Authority (DLSA) for free legal aid.
+      {% endif %}
+    </p>
+
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,64 @@
+# ============================================================
+#  NyayaSetu — .gitignore
+# ============================================================
+
+# Python cache / compiled files
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+# Virtual environments
+venv/
+env/
+.venv/
+.env_dir/
+ENV/
+
+# Environment / secrets
+.env
+
+# Flask / Werkzeug instance folder (contains the SQLite database)
+instance/
+
+# SQLite database files
+*.db
+*.sqlite3
+*.sqlite
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+*.egg
+.eggs/
+
+# PyInstaller
+*.spec
+
+# Pytest / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+logs/
+
+# Node (if any front-end tooling is added later)
+node_modules/
+npm-debug.log*

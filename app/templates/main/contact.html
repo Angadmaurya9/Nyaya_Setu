@@ -1,0 +1,124 @@
+{# ============================================================
+   NyayaSetu — Contact Page (app/templates/main/contact.html)
+   ============================================================ #}
+{% extends "base.html" %}
+
+{% block title %}{% if lang == 'hi' %}संपर्क करें{% else %}Contact Us{% endif %}{% endblock %}
+{% block meta_description %}
+  {% if lang == 'hi' %}NyayaSetu से संपर्क करें। हम आपकी बात सुनते हैं।
+  {% else %}Contact the NyayaSetu team. We'd love to hear from you.{% endif %}
+{% endblock %}
+
+{% block content %}
+
+<section class="page-hero section" aria-labelledby="contact-heading">
+  <div class="container">
+    <h1 class="page-hero__title" id="contact-heading">
+      {% if lang == 'hi' %}संपर्क करें{% else %}Contact Us{% endif %}
+    </h1>
+    <p class="page-hero__subtitle">
+      {% if lang == 'hi' %}
+        हमें प्रतिक्रिया, सुझाव, या सहायता के लिए लिखें।
+      {% else %}
+        Write to us for feedback, suggestions, or support.
+      {% endif %}
+    </p>
+  </div>
+</section>
+
+<section class="section" aria-label="Contact form">
+  <div class="container container--narrow">
+
+    <div class="card">
+      <form method="POST" action="{{ url_for('contact.contact') }}"
+            class="contact-form" novalidate
+            aria-label="Contact form">
+
+        {# CSRF token placeholder — Phase 2: add Flask-WTF CSRF protection #}
+        {# {{ csrf_token() }} #}
+
+        <div class="form-group">
+          <label for="name" class="form-label">
+            {% if lang == 'hi' %}आपका नाम{% else %}Your Name{% endif %}
+            <span class="form-label__required" aria-hidden="true">*</span>
+          </label>
+          <input type="text" id="name" name="name"
+                 class="form-input {% if errors.name %}form-input--error{% endif %}"
+                 value="{{ form_data.get('name', '') }}"
+                 maxlength="100"
+                 required aria-required="true"
+                 {% if errors.name %}aria-invalid="true" aria-describedby="name-error"{% endif %}
+                 placeholder="{% if lang == 'hi' %}राम कुमार{% else %}Ram Kumar{% endif %}" />
+          {% if errors.name %}
+            <p id="name-error" class="form-error" role="alert">{{ errors.name }}</p>
+          {% endif %}
+        </div>
+
+        <div class="form-group">
+          <label for="email" class="form-label">
+            {% if lang == 'hi' %}ईमेल पता{% else %}Email Address{% endif %}
+            <span class="form-label__required" aria-hidden="true">*</span>
+          </label>
+          <input type="email" id="email" name="email"
+                 class="form-input {% if errors.email %}form-input--error{% endif %}"
+                 value="{{ form_data.get('email', '') }}"
+                 maxlength="200"
+                 required aria-required="true"
+                 {% if errors.email %}aria-invalid="true" aria-describedby="email-error"{% endif %}
+                 placeholder="{% if lang == 'hi' %}आपका@ईमेल.com{% else %}your@email.com{% endif %}" />
+          {% if errors.email %}
+            <p id="email-error" class="form-error" role="alert">{{ errors.email }}</p>
+          {% endif %}
+        </div>
+
+        <div class="form-group">
+          <label for="subject" class="form-label">
+            {% if lang == 'hi' %}विषय{% else %}Subject{% endif %}
+            <span class="form-label__required" aria-hidden="true">*</span>
+          </label>
+          <input type="text" id="subject" name="subject"
+                 class="form-input {% if errors.subject %}form-input--error{% endif %}"
+                 value="{{ form_data.get('subject', '') }}"
+                 maxlength="200"
+                 required aria-required="true"
+                 {% if errors.subject %}aria-invalid="true" aria-describedby="subject-error"{% endif %}
+                 placeholder="{% if lang == 'hi' %}संदेश का विषय{% else %}Message subject{% endif %}" />
+          {% if errors.subject %}
+            <p id="subject-error" class="form-error" role="alert">{{ errors.subject }}</p>
+          {% endif %}
+        </div>
+
+        <div class="form-group">
+          <label for="message" class="form-label">
+            {% if lang == 'hi' %}संदेश{% else %}Message{% endif %}
+            <span class="form-label__required" aria-hidden="true">*</span>
+          </label>
+          <textarea id="message" name="message" rows="6"
+                    class="form-textarea {% if errors.message %}form-input--error{% endif %}"
+                    maxlength="2000"
+                    required aria-required="true"
+                    {% if errors.message %}aria-invalid="true" aria-describedby="message-error"{% endif %}
+                    placeholder="{% if lang == 'hi' %}आपका संदेश यहाँ लिखें...{% else %}Write your message here...{% endif %}"></textarea>
+          {% if errors.message %}
+            <p id="message-error" class="form-error" role="alert">{{ errors.message }}</p>
+          {% endif %}
+          <p class="form-hint">
+            {% if lang == 'hi' %}
+              कृपया अपनी संपर्क जानकारी के अलावा संवेदनशील व्यक्तिगत जानकारी न साझा करें।
+            {% else %}
+              Please do not share sensitive personal information beyond your contact details.
+            {% endif %}
+          </p>
+        </div>
+
+        <button type="submit" class="btn btn--primary btn--full">
+          {% if lang == 'hi' %}संदेश भेजें{% else %}Send Message{% endif %}
+        </button>
+
+      </form>
+    </div>
+
+  </div>
+</section>
+
+{% endblock %}

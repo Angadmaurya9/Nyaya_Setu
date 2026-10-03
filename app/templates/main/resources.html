@@ -1,0 +1,76 @@
+{# ============================================================
+   NyayaSetu — Resources Page (app/templates/main/resources.html)
+   ============================================================ #}
+{% extends "base.html" %}
+
+{% block title %}{% if lang == 'hi' %}कानूनी संसाधन{% else %}Legal Resources{% endif %}{% endblock %}
+{% block meta_description %}
+  {% if lang == 'hi' %}NALSA, eCourts, RTI पोर्टल जैसे आधिकारिक कानूनी सहायता संसाधनों के लिंक।
+  {% else %}Links to official legal aid resources including NALSA, eCourts, and the RTI portal.{% endif %}
+{% endblock %}
+
+{% block content %}
+
+<section class="page-hero section" aria-labelledby="resources-heading">
+  <div class="container">
+    <h1 class="page-hero__title" id="resources-heading">
+      {% if lang == 'hi' %}कानूनी संसाधन{% else %}Legal Resources{% endif %}
+    </h1>
+    <p class="page-hero__subtitle">
+      {% if lang == 'hi' %}
+        आधिकारिक सरकारी कानूनी सहायता सेवाओं के लिंक।
+      {% else %}
+        Links to official government legal-aid services and portals.
+      {% endif %}
+    </p>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="resource-list-heading">
+  <div class="container">
+    <h2 class="sr-only" id="resource-list-heading">
+      {% if lang == 'hi' %}संसाधन सूची{% else %}Resource List{% endif %}
+    </h2>
+
+    <div class="resource-grid">
+      {% for r in resources %}
+      <article class="resource-card">
+        <span class="resource-card__icon" aria-hidden="true">{{ r.icon }}</span>
+        <div class="resource-card__body">
+          <h3 class="resource-card__title">
+            {{ r['title_hi'] if lang == 'hi' else r['title_en'] }}
+          </h3>
+          <p class="resource-card__desc">
+            {{ r['desc_hi'] if lang == 'hi' else r['desc_en'] }}
+          </p>
+          <a href="{{ r.url }}"
+             class="resource-card__link btn btn--outline btn--small"
+             target="_blank"
+             rel="noopener noreferrer"
+             aria-label="{{ (r['title_hi'] if lang == 'hi' else r['title_en']) }} ({% if lang == 'hi' %}नई विंडो में खुलता है{% else %}opens in new tab{% endif %})">
+            {% if lang == 'hi' %}वेबसाइट पर जाएं &rarr;{% else %}Visit Website &rarr;{% endif %}
+          </a>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+
+    {# ── Helpline box ─────────────────────────────────────────── #}
+    <div class="callout callout--info mt-section">
+      <span class="callout__icon" aria-hidden="true">📞</span>
+      <div class="callout__body">
+        <strong>{% if lang == 'hi' %}महत्वपूर्ण हेल्पलाइन{% else %}Important Helplines{% endif %}</strong>
+        <ul class="helpline-list">
+          <li><strong>NALSA:</strong> 15100</li>
+          <li><strong>{% if lang == 'hi' %}राष्ट्रीय महिला आयोग{% else %}National Women's Commission{% endif %}:</strong> 7827170170</li>
+          <li><strong>{% if lang == 'hi' %}बाल हेल्पलाइन{% else %}Child Helpline{% endif %}:</strong> 1098</li>
+          <li><strong>{% if lang == 'hi' %}पुलिस{% else %}Police{% endif %}:</strong> 100</li>
+          <li><strong>{% if lang == 'hi' %}आपातकाल{% else %}Emergency{% endif %}:</strong> 112</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+{% endblock %}

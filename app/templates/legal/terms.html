@@ -1,0 +1,66 @@
+{# ============================================================
+   NyayaSetu — Terms of Use (app/templates/legal/terms.html)
+   ============================================================ #}
+{% extends "base.html" %}
+
+{% block title %}{% if lang == 'hi' %}उपयोग की शर्तें{% else %}Terms of Use{% endif %}{% endblock %}
+
+{% block content %}
+<section class="page-hero section">
+  <div class="container">
+    <h1 class="page-hero__title">
+      {% if lang == 'hi' %}उपयोग की शर्तें{% else %}Terms of Use{% endif %}
+    </h1>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container container--narrow prose">
+
+    <p class="text-muted">
+      {% if lang == 'hi' %}अंतिम अपडेट: अक्टूबर 2025{% else %}Last updated: October 2025{% endif %}
+    </p>
+
+    <h2>{% if lang == 'hi' %}1. स्वीकृति{% else %}1. Acceptance{% endif %}</h2>
+    <p>
+      {% if lang == 'hi' %}
+        NyayaSetu का उपयोग करके, आप इन शर्तों से सहमत होते हैं।
+        यदि आप सहमत नहीं हैं, तो कृपया इस प्लेटफ़ॉर्म का उपयोग न करें।
+      {% else %}
+        By using NyayaSetu, you agree to these terms.
+        If you do not agree, please do not use this platform.
+      {% endif %}
+    </p>
+
+    <h2>{% if lang == 'hi' %}2. केवल शैक्षिक उद्देश्य{% else %}2. Educational Purpose Only{% endif %}</h2>
+    <p>
+      {% if lang == 'hi' %}
+        यह प्लेटफ़ॉर्म एक BCA छात्र परियोजना है। इसे शैक्षिक उद्देश्यों के लिए बनाया गया है
+        और इसकी कोई वाणिज्यिक उद्देश्य नहीं है।
+      {% else %}
+        This platform is a BCA student project built for educational purposes with no commercial intent.
+      {% endif %}
+    </p>
+
+    <h2>{% if lang == 'hi' %}3. अनुमत उपयोग{% else %}3. Permitted Use{% endif %}</h2>
+    <p>
+      {% if lang == 'hi' %}
+        आप इस प्लेटफ़ॉर्म का उपयोग केवल कानूनी जानकारी और सरकारी योजनाओं के बारे में
+        जानकारी के लिए कर सकते हैं।
+      {% else %}
+        You may use this platform only to access general legal information and learn about government schemes.
+      {% endif %}
+    </p>
+
+    <h2>{% if lang == 'hi' %}4. अस्वीकरण{% else %}4. Disclaimer{% endif %}</h2>
+    <p>
+      {% if lang == 'hi' %}
+        पूर्ण कानूनी अस्वीकरण के लिए, कृपया <a href="{{ url_for('legal.disclaimer') }}">अस्वीकरण पृष्ठ</a> देखें।
+      {% else %}
+        For the full legal disclaimer, please visit our <a href="{{ url_for('legal.disclaimer') }}">Disclaimer page</a>.
+      {% endif %}
+    </p>
+
+  </div>
+</section>
+{% endblock %}
