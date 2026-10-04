@@ -53,7 +53,7 @@
     </div>
 
     <div class="card">
-      <form method="POST" action="{{ url_for('rti.generate') }}" class="rti-form" id="rti-form" novalidate>
+      <form method="POST" action="{{ url_for('rti.generate') }}" class="rti-form" id="rti-form" data-lang="{{ lang }}" novalidate>
 
         <h2 style="font-size: 1.25rem; margin-top: 0; margin-bottom: var(--space-4); border-bottom: 2px solid var(--color-border); padding-bottom: var(--space-2);">
           👤 {% if lang == 'hi' %}1. आवेदक का विवरण (Applicant Details){% else %}1. Applicant Details{% endif %}
@@ -133,6 +133,71 @@
           📝 {% if lang == 'hi' %}3. वांछित सूचना का विवरण (Information Sought){% else %}3. Information Sought{% endif %}
         </h2>
 
+        {# ── AI ASSISTANT CARD (Phase 2 Frontend Integration) ── #}
+        <div class="ai-assistant-card" id="ai-assistant-card" aria-labelledby="ai-assistant-title">
+          <div class="ai-assistant-card__header">
+            <div class="ai-assistant-card__title-wrap">
+              <span class="ai-assistant-card__badge" aria-hidden="true">✨ AI</span>
+              <label for="ai_description" class="ai-assistant-card__title" id="ai-assistant-title">
+                {% if lang == 'hi' %}आपको किस सूचना की आवश्यकता है?{% else %}What information do you need?{% endif %}
+              </label>
+            </div>
+            <span class="ai-assistant-card__tag">
+              {% if lang == 'hi' %}वैकल्पिक AI सहायक{% else %}Optional AI Assistant{% endif %}
+            </span>
+          </div>
+
+          <p class="ai-assistant-card__helper">
+            {% if lang == 'hi' %}
+              अपनी समस्या और वांछित सूचना का विवरण दें। हमारा AI आपके लिए प्रासंगिक आरटीआई प्रश्न तैयार करने में मदद करेगा।
+            {% else %}
+              Describe your issue and the information you need, if known. Our AI will help you prepare relevant RTI questions.
+            {% endif %}
+          </p>
+
+          <div class="form-group" style="margin-bottom: var(--space-3);">
+            <textarea id="ai_description" class="form-textarea ai-assistant-card__textarea" rows="3"
+                      maxlength="1000"
+                      placeholder="{% if lang == 'hi' %}उदा. हमारे इलाके में मुख्य सड़क 6 महीने से टूटी पड़ी है और ठेकेदार ने काम छोड़ दिया है। मुझे टेंडर, स्वीकृत बजट और कार्य पूरा होने की समय-सीमा की जानकारी चाहिए...{% else %}e.g., The main road in our ward was dug up 6 months ago and left unfinished. I want to inspect the contract agreement, approved expenditure, and completion timelines...{% endif %}"
+                      aria-describedby="ai-char-counter"></textarea>
+            
+            <div class="textarea-footer">
+              <span class="form-hint" style="margin-top: 0;">
+                {% if lang == 'hi' %}कम से कम 10 अक्षर (अधिकतम 1000){% else %}Min 10 characters (max 1000){% endif %}
+              </span>
+              <span class="char-counter" id="ai-char-counter" aria-live="polite">0 / 1000</span>
+            </div>
+          </div>
+
+          {# Error Alert Box #}
+          <div id="ai-error-box" class="callout callout--warning ai-assistant-card__alert" style="display: none; margin-bottom: var(--space-3);" role="alert" aria-live="assertive">
+            <span class="callout__icon" aria-hidden="true">⚠️</span>
+            <div class="callout__body">
+              <span id="ai-error-text"></span>
+            </div>
+          </div>
+
+          {# Success Status Box #}
+          <div id="ai-success-box" class="callout callout--info ai-assistant-card__alert" style="display: none; margin-bottom: var(--space-3);" role="status" aria-live="polite">
+            <span class="callout__icon" aria-hidden="true">✅</span>
+            <div class="callout__body">
+              <span id="ai-success-text"></span>
+            </div>
+          </div>
+
+          <div class="ai-assistant-card__actions">
+            <button type="button" id="btn-generate-questions" class="btn btn--primary btn--small">
+              <span class="btn__spinner" id="ai-spinner" style="display: none;" aria-hidden="true">⏳</span>
+              <span id="ai-btn-text">
+                {% if lang == 'hi' %}Generate RTI Questions{% else %}Generate RTI Questions{% endif %}
+              </span>
+            </button>
+            <span class="form-hint" style="margin: 0; align-self: center;">
+              {% if lang == 'hi' %}सुझाव सीधे नीचे दिए गए संपादन योग्य फ़ील्ड में भर जाएंगे।{% else %}Suggestions populate directly into the editable fields below.{% endif %}
+            </span>
+          </div>
+        </div>
+
         <div class="form-group">
           <label for="subject" class="form-label">
             {% if lang == 'hi' %}आरटीआई का विषय (Subject){% else %}Subject of Information{% endif %}
@@ -144,10 +209,20 @@
         </div>
 
         <div class="form-group">
-          <label for="info_requested" class="form-label">
-            {% if lang == 'hi' %}विशिष्ट प्रश्न / वांछित सूचना के बिंदु (प्रत्येक बिंदु नई पंक्ति में लिखें){% else %}Specific Queries / Information Points (One per line){% endif %}
-            <span class="form-label__required" aria-hidden="true">*</span>
-          </label>
+          <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: var(--space-2); margin-bottom: var(--space-2);">
+            <label for="info_requested" class="form-label" style="margin-bottom: 0;">
+              {% if lang == 'hi' %}विशिष्ट प्रश्न / वांछित सूचना के बिंदु (प्रत्येक बिंदु नई पंक्ति में लिखें){% else %}Specific Queries / Information Points (One per line){% endif %}
+              <span class="form-label__required" aria-hidden="true">*</span>
+            </label>
+            <div class="query-actions" style="display: flex; gap: var(--space-2);">
+              <button type="button" id="btn-add-query" class="query-actions-btn" aria-label="Add a new query point">
+                + {% if lang == 'hi' %}प्रश्न जोड़ें{% else %}Add Query{% endif %}
+              </button>
+              <button type="button" id="btn-remove-last-query" class="query-actions-btn" aria-label="Remove the last query point">
+                − {% if lang == 'hi' %}अंतिम प्रश्न हटाएं{% else %}Remove Last Query{% endif %}
+              </button>
+            </div>
+          </div>
           <textarea id="info_requested" name="info_requested" class="form-textarea" rows="6"
                     placeholder="{% if lang == 'hi' %}1. उक्त सड़क निर्माण कार्य की स्वीकृत लागत और ठेकेदार का नाम प्रदान करें।&#10;2. कार्य पूर्णता प्रमाण पत्र की सत्यापित प्रतिलिपि उपलब्ध कराएं।&#10;3. सामग्री परीक्षण रिपोर्ट की प्रमाणित प्रति प्रदान करें।{% else %}1. Please provide the approved budget and contractor details for the said road repair project.&#10;2. Please provide certified copy of the completion certificate.&#10;3. Please provide certified copies of quality audit and material inspection reports.{% endif %}" required>{{ form_data.info_requested if form_data else '' }}</textarea>
           <span class="form-hint">

@@ -803,28 +803,40 @@ p { margin-bottom: var(--space-4); }
 .scheme-card__note  { font-size: 0.8rem; color: var(--color-text-light); font-style: italic; margin: 0; }
 
 /* ─────────────────────────────────────────────────────────────
-   17. Tech Cards (About page)
+   17. Technology Stack (About page — Text-Based)
    ───────────────────────────────────────────────────────────── */
-.tech-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: var(--space-4);
-  margin-block: var(--space-6);
-}
-.tech-card {
+.tech-stack-list {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: var(--space-2);
-  padding: var(--space-4);
-  background: var(--color-surface-alt);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
+  gap: var(--space-3);
+  margin-block: var(--space-6);
 }
-.tech-card__icon { font-size: 2rem; }
-.tech-card__name { font-weight: 600; font-size: 0.9rem; }
-.tech-card__desc { font-size: 0.8rem; color: var(--color-text-muted); margin: 0; }
+
+.tech-stack-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-left: 3px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.tech-stack-item__category {
+  font-weight: 600;
+  font-size: 0.825rem;
+  color: var(--color-primary);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.tech-stack-item__content {
+  font-size: 0.95rem;
+  color: var(--color-text);
+  line-height: 1.5;
+}
 
 /* ─────────────────────────────────────────────────────────────
    18. Forms
@@ -1495,4 +1507,130 @@ p { margin-bottom: var(--space-4); }
     resize: none !important;
   }
 }
+
+/* ─────────────────────────────────────────────────────────────
+   24. RTI AI Assistant Component (Phase 2 Frontend Integration)
+   ───────────────────────────────────────────────────────────── */
+.ai-assistant-card {
+  background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-surface) 100%);
+  border: 1.5px solid var(--color-primary);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  margin-bottom: var(--space-6);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--transition-base);
+}
+
+.ai-assistant-card:focus-within {
+  box-shadow: var(--shadow-md);
+}
+
+.ai-assistant-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.ai-assistant-card__title-wrap {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.ai-assistant-card__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+}
+
+.ai-assistant-card__title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.ai-assistant-card__tag {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+}
+
+.ai-assistant-card__helper {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-3);
+  line-height: 1.5;
+}
+
+.ai-assistant-card__textarea {
+  min-height: 80px;
+  background: var(--color-surface);
+}
+
+.ai-assistant-card__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  margin-top: var(--space-2);
+}
+
+.ai-assistant-card__alert {
+  padding: var(--space-3) var(--space-4);
+  font-size: 0.9rem;
+}
+
+.btn__spinner {
+  display: inline-block;
+  animation: spin 1s linear infinite;
+  margin-right: 4px;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.query-actions-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-family: var(--font-body);
+  padding: 3px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-alt);
+  color: var(--color-text);
+  cursor: pointer;
+  transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+}
+
+.query-actions-btn:hover {
+  background: var(--color-primary-light);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.query-actions-btn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
 

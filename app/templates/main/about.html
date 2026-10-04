@@ -13,14 +13,19 @@
 
 <section class="page-hero section" aria-labelledby="about-heading">
   <div class="container">
+    <div class="hero__badge" style="margin-inline: auto;">
+      <span class="hero__badge-text">
+        NyayaSetu: Smart Civic Rights &amp; Action Guidance System
+      </span>
+    </div>
     <h1 class="page-hero__title" id="about-heading">
       {% if lang == 'hi' %}हमारे बारे में{% else %}About NyayaSetu{% endif %}
     </h1>
     <p class="page-hero__subtitle">
       {% if lang == 'hi' %}
-        न्याय तक पहुंच हर नागरिक का अधिकार है।
+        नागरिकों और न्याय के बीच सेतु — न्याय तक पहुंच हर नागरिक का अधिकार है।
       {% else %}
-        Access to justice is every citizen's right.
+        Bridging Citizens and Justice — Access to justice is every citizen's right.
       {% endif %}
     </p>
   </div>
@@ -30,69 +35,58 @@
   <div class="container prose">
 
     <h2 id="mission-heading">
-      {% if lang == 'hi' %}हमारा मिशन{% else %}Our Mission{% endif %}
+      {% if lang == 'hi' %}हमारा मिशन और उद्देश्य{% else %}Our Mission &amp; Purpose{% endif %}
     </h2>
     <p>
       {% if lang == 'hi' %}
-        NyayaSetu का लक्ष्य है कि भारत के हर नागरिक — विशेषकर वे जो आर्थिक रूप से कमजोर हैं
+        <strong>NyayaSetu: Smart Civic Rights &amp; Action Guidance System</strong> का लक्ष्य है कि भारत के हर नागरिक — विशेषकर वे जो आर्थिक रूप से कमजोर हैं
         या दूरदराज के क्षेत्रों में रहते हैं — को सरल भाषा में कानूनी जानकारी मिल सके।
         हम मानते हैं कि कानूनी जागरूकता एक मौलिक नागरिक अधिकार है।
       {% else %}
-        NyayaSetu's mission is to make legal information accessible to every Indian citizen —
+        <strong>NyayaSetu: Smart Civic Rights &amp; Action Guidance System</strong>'s mission is to make actionable legal and civic information accessible to every Indian citizen —
         especially those who are economically marginalised or live in remote areas — in plain,
         understandable language. We believe legal awareness is a fundamental civic right.
       {% endif %}
     </p>
 
-    <h2>{% if lang == 'hi' %}समस्या{% else %}The Problem{% endif %}</h2>
+    <h2>{% if lang == 'hi' %}समस्या और समाधान{% else %}The Problem &amp; The Solution{% endif %}</h2>
     <p>
       {% if lang == 'hi' %}
         भारत में लाखों नागरिक अपने कानूनी अधिकारों से अनजान हैं। जटिल कानूनी भाषा,
         वकीलों की ऊंची फीस और जागरूकता की कमी न्याय तक पहुंच में बाधा डालती है।
-        NyayaSetu इस खाई को पाटने का प्रयास करता है।
+        NyayaSetu नागरिकों को बिना जटिल शब्दावली के सही कानूनी दिशा, चरणबद्ध वैधानिक उपाय और आधिकारिक संसाधन उपलब्ध कराकर इस खाई को पाटने का प्रयास करता है।
       {% else %}
-        Millions of Indian citizens are unaware of their legal rights. Complex legal language,
+        Millions of Indian citizens are unaware of their legal rights and procedural remedies. Complex legal language,
         high advocate fees, and lack of awareness create barriers to justice.
-        NyayaSetu attempts to bridge this gap.
+        NyayaSetu attempts to bridge this gap by directly guiding citizens through step-by-step remedies, verified government portals, and formal RTI applications.
       {% endif %}
     </p>
 
     <h2>{% if lang == 'hi' %}प्रौद्योगिकी स्टैक{% else %}Technology Stack{% endif %}</h2>
-    <div class="tech-grid">
-      <div class="tech-card">
-        <span class="tech-card__icon">🐍</span>
-        <span class="tech-card__name">Python 3.14</span>
-        <span class="tech-card__desc">{% if lang == 'hi' %}बैकएंड भाषा{% else %}Backend language{% endif %}</span>
+    <div class="tech-stack-list">
+      <div class="tech-stack-item">
+        <span class="tech-stack-item__category">{% if lang == 'hi' %}बैकएंड व फ्रेमवर्क{% else %}Backend &amp; Framework{% endif %}</span>
+        <span class="tech-stack-item__content">Python 3.14 &bull; Flask 3 (Modular Blueprint Architecture, WSGI Application)</span>
       </div>
-      <div class="tech-card">
-        <span class="tech-card__icon">🌶️</span>
-        <span class="tech-card__name">Flask 3</span>
-        <span class="tech-card__desc">{% if lang == 'hi' %}वेब फ्रेमवर्क{% else %}Web framework{% endif %}</span>
+      <div class="tech-stack-item">
+        <span class="tech-stack-item__category">{% if lang == 'hi' %}डेटाबेस व ORM{% else %}Database &amp; ORM{% endif %}</span>
+        <span class="tech-stack-item__content">SQLite 3 &bull; SQLAlchemy ORM (Statutory Guidance, Helplines &amp; Verification Datasets)</span>
       </div>
-      <div class="tech-card">
-        <span class="tech-card__icon">🗄️</span>
-        <span class="tech-card__name">SQLite / SQLAlchemy</span>
-        <span class="tech-card__desc">{% if lang == 'hi' %}डेटाबेस{% else %}Database ORM{% endif %}</span>
+      <div class="tech-stack-item">
+        <span class="tech-stack-item__category">{% if lang == 'hi' %}आर्टिफिशियल इंटेलिजेंस (AI){% else %}Artificial Intelligence (AI){% endif %}</span>
+        <span class="tech-stack-item__content">Google Gemini API (gemini-flash-latest for Issue Classification &amp; RTI Question Assistant) with Rule-Based Keyword Fallback</span>
       </div>
-      <div class="tech-card">
-        <span class="tech-card__icon">🎨</span>
-        <span class="tech-card__name">CSS Custom Properties</span>
-        <span class="tech-card__desc">{% if lang == 'hi' %}लाइट/डार्क थीम{% else %}Light/dark theming{% endif %}</span>
+      <div class="tech-stack-item">
+        <span class="tech-stack-item__category">{% if lang == 'hi' %}दस्तावेज़ जनरेशन{% else %}Document Generation{% endif %}</span>
+        <span class="tech-stack-item__content">ReportLab (Statutory RTI Section 6(1) Print-Ready A4 PDF Generator)</span>
       </div>
-      <div class="tech-card">
-        <span class="tech-card__icon">📝</span>
-        <span class="tech-card__name">Jinja2</span>
-        <span class="tech-card__desc">{% if lang == 'hi' %}टेम्पलेट इंजन{% else %}Template engine{% endif %}</span>
+      <div class="tech-stack-item">
+        <span class="tech-stack-item__category">{% if lang == 'hi' %}फ्रंटएंड व यूआई{% else %}Frontend &amp; UI Architecture{% endif %}</span>
+        <span class="tech-stack-item__content">Semantic HTML5 &bull; CSS Custom Properties (Light &amp; Dark themes) &bull; Vanilla JavaScript (Zero external libraries)</span>
       </div>
-      <div class="tech-card">
-        <span class="tech-card__icon">🤖</span>
-        <span class="tech-card__name">Gemini API</span>
-        <span class="tech-card__desc">{% if lang == 'hi' %}AI कानूनी वर्गीकरण{% else %}AI legal classification{% endif %}</span>
-      </div>
-      <div class="tech-card">
-        <span class="tech-card__icon">📄</span>
-        <span class="tech-card__name">ReportLab</span>
-        <span class="tech-card__desc">{% if lang == 'hi' %}RTI पीडीएफ जनरेशन{% else %}RTI PDF generation{% endif %}</span>
+      <div class="tech-stack-item">
+        <span class="tech-stack-item__category">{% if lang == 'hi' %}सुरक्षा व गोपनीयता{% else %}Security &amp; Architecture{% endif %}</span>
+        <span class="tech-stack-item__content">Zero-Retention Data Architecture &bull; Client-Side &amp; Server-Side Validation &bull; Non-persistence of RTI drafts</span>
       </div>
     </div>
 

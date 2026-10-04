@@ -147,4 +147,219 @@
     }
   });
 
+
+  /* ──────────────────────────────────────────────────────────
+     6. RTI AI Question Generator (Phase 2 Frontend Integration)
+     ────────────────────────────────────────────────────────── */
+  const rtiForm           = document.getElementById("rti-form");
+  const btnGenerate       = document.getElementById("btn-generate-questions");
+  const aiDesc            = document.getElementById("ai_description");
+  const aiCharCounter     = document.getElementById("ai-char-counter");
+  const aiSpinner         = document.getElementById("ai-spinner");
+  const aiBtnText         = document.getElementById("ai-btn-text");
+  const aiErrorBox        = document.getElementById("ai-error-box");
+  const aiErrorText       = document.getElementById("ai-error-text");
+  const aiSuccessBox      = document.getElementById("ai-success-box");
+  const aiSuccessText     = document.getElementById("ai-success-text");
+
+  const subjectInput      = document.getElementById("subject");
+  const infoRequested     = document.getElementById("info_requested");
+  const btnAddQuery       = document.getElementById("btn-add-query");
+  const btnRemoveLast     = document.getElementById("btn-remove-last-query");
+
+  if (btnGenerate && aiDesc && subjectInput && infoRequested) {
+    const pageLang = (rtiForm && rtiForm.getAttribute("data-lang")) ||
+                     document.documentElement.lang ||
+                     "en";
+
+    // 1. Live character counter
+    if (aiCharCounter) {
+      aiDesc.addEventListener("input", function () {
+        const len = this.value.length;
+        aiCharCounter.textContent = len + " / 1000";
+        if (len > 900) {
+          aiCharCounter.classList.add("char-counter--warning");
+        } else {
+          aiCharCounter.classList.remove("char-counter--warning");
+        }
+        if (len > 1000) {
+          aiCharCounter.classList.add("char-counter--error");
+        } else {
+          aiCharCounter.classList.remove("char-counter--error");
+        }
+      });
+    }
+
+    function showAiError(msg) {
+      if (aiErrorBox && aiErrorText) {
+        aiErrorText.textContent = msg;
+        aiErrorBox.style.display = "flex";
+      }
+      if (aiSuccessBox) {
+        aiSuccessBox.style.display = "none";
+      }
+    }
+
+    function showAiSuccess(msg) {
+      if (aiSuccessBox && aiSuccessText) {
+        aiSuccessText.textContent = msg;
+        aiSuccessBox.style.display = "flex";
+      }
+      if (aiErrorBox) {
+        aiErrorBox.style.display = "none";
+      }
+    }
+
+    function clearAiFeedback() {
+      if (aiErrorBox) aiErrorBox.style.display = "none";
+      if (aiSuccessBox) aiSuccessBox.style.display = "none";
+    }
+
+    // 2. Generate button click handler
+    btnGenerate.addEventListener("click", async function () {
+      clearAiFeedback();
+      const rawText = aiDesc.value.trim();
+
+      // Client-side length validation
+      if (rawText.length < 10) {
+        showAiError(
+          pageLang === "hi"
+            ? "कृपया अपनी समस्या का विवरण कम से कम 10 अक्षरों में दर्ज करें।"
+            : "Please describe your issue or the information needed in at least 10 characters."
+        );
+        aiDesc.focus();
+        return;
+      }
+
+      if (rawText.length > 1000) {
+        showAiError(
+          pageLang === "hi"
+            ? "विवरण 1000 अक्षरों से अधिक नहीं हो सकता।"
+            : "Description cannot exceed 1000 characters."
+        );
+        aiDesc.focus();
+        return;
+      }
+
+      // Check for accidental overwrite of existing user input
+      const existingSubject = subjectInput.value.trim();
+      const existingQueries = infoRequested.value.trim();
+      if (existingSubject.length > 0 || existingQueries.length > 0) {
+        const confirmMsg = pageLang === "hi"
+          ? "विषय या प्रश्नों में पहले से सामग्री दर्ज है। क्या आप इसे AI द्वारा सुझाए गए प्रश्नों से बदलना चाहते हैं?"
+          : "You already have content entered in the Subject or Questions fields. Do you want to replace it with the AI suggestions?";
+        if (!window.confirm(confirmMsg)) {
+          return; // User declined overwrite
+        }
+      }
+
+      // Set loading state & prevent duplicate submission
+      btnGenerate.disabled = true;
+      btnGenerate.setAttribute("aria-busy", "true");
+      if (aiSpinner) aiSpinner.style.display = "inline-block";
+      const defaultBtnLabel = aiBtnText ? aiBtnText.textContent : "Generate RTI Questions";
+      if (aiBtnText) {
+        aiBtnText.textContent = pageLang === "hi"
+          ? "प्रश्न तैयार किए जा रहे हैं..."
+          : "Generating questions...";
+      }
+
+      try {
+        const response = await fetch("/rti/suggest-questions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+          },
+          body: JSON.stringify({
+            description: rawText,
+            lang: pageLang
+          })
+        });
+
+        const data = await response.json().catch(function () { return null; });
+
+        if (!response.ok) {
+          const errMsg = (data && data.error)
+            ? data.error
+            : (pageLang === "hi"
+                ? "AI सेवा वर्तमान में अनुपलब्ध है। कृपया मैन्युअल रूप से विवरण भरें या बाद में प्रयास करें।"
+                : "AI service is currently unavailable. Please enter details manually or try again later.");
+          showAiError(errMsg);
+          return;
+        }
+
+        if (data && data.success && data.data) {
+          // Populate Subject
+          if (data.data.subject) {
+            subjectInput.value = data.data.subject;
+          }
+
+          // Populate Questions (one per line with standard numbering)
+          if (Array.isArray(data.data.questions) && data.data.questions.length > 0) {
+            const formatted = data.data.questions.map(function (q, idx) {
+              const clean = q.replace(/^\s*(?:\d+[\.\)]|\-|\*)\s*/, "").trim();
+              return (idx + 1) + ". " + clean;
+            }).join("\n");
+            infoRequested.value = formatted;
+          }
+
+          showAiSuccess(
+            pageLang === "hi"
+              ? "✅ आरटीआई विषय और प्रश्न नीचे भर दिए गए हैं। कृपया समीक्षा करें और आवश्यकतानुसार संपादन करें।"
+              : "✅ RTI subject and questions generated below. Please review and edit as needed before generating the preview."
+          );
+
+          // Smooth scroll to Subject field so user sees populated results
+          subjectInput.scrollIntoView({ behavior: "smooth", block: "center" });
+          subjectInput.focus();
+        } else {
+          showAiError(
+            pageLang === "hi"
+              ? "अमान्य AI प्रतिक्रिया प्राप्त हुई। कृपया पुनः प्रयास करें।"
+              : "Received an invalid response from AI. Please try again."
+          );
+        }
+      } catch (networkErr) {
+        showAiError(
+          pageLang === "hi"
+            ? "नेटवर्क त्रुटि: सर्वर से संपर्क नहीं हो सका। कृपया अपना कनेक्शन जांचें।"
+            : "Network error: Could not reach the server. Please check your connection."
+        );
+      } finally {
+        btnGenerate.disabled = false;
+        btnGenerate.removeAttribute("aria-busy");
+        if (aiSpinner) aiSpinner.style.display = "none";
+        if (aiBtnText) aiBtnText.textContent = defaultBtnLabel;
+      }
+    });
+
+    // 3. Add Query button
+    if (btnAddQuery) {
+      btnAddQuery.addEventListener("click", function () {
+        const val = infoRequested.value.trimEnd();
+        const lines = val ? val.split("\n").filter(function (l) { return l.trim().length > 0; }) : [];
+        const nextNum = lines.length + 1;
+        infoRequested.value = (val ? val + "\n" : "") + nextNum + ". ";
+        infoRequested.focus();
+        infoRequested.setSelectionRange(infoRequested.value.length, infoRequested.value.length);
+      });
+    }
+
+    // 4. Remove Last Query button
+    if (btnRemoveLast) {
+      btnRemoveLast.addEventListener("click", function () {
+        const val = infoRequested.value.trimEnd();
+        if (!val) return;
+        const lines = val.split("\n");
+        if (lines.length > 0) {
+          lines.pop();
+          infoRequested.value = lines.join("\n");
+          infoRequested.focus();
+        }
+      });
+    }
+  }
+
 }()); // end IIFE
+

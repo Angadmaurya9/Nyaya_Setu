@@ -15,9 +15,10 @@ import io
 from datetime import datetime
 from flask import (
     Blueprint, render_template, request, redirect, url_for,
-    send_file, flash, current_app
+    send_file, flash, current_app, jsonify
 )
 from app.utils import get_language
+from app.services.gemini_service import generate_rti_questions
 
 # ReportLab imports for PDF generation
 from reportlab.lib.pagesizes import A4
@@ -364,3 +365,67 @@ def export_pdf():
         current_app.logger.error("ReportLab PDF generation failure: %s", exc)
         flash("PDF generation encountered an error. Please review your text or use the Print button to print/save directly from your browser.", "error")
         return redirect(url_for("rti.generator"))
+
+
+@rti_bp.route("/suggest-questions", methods=["POST"])
+def suggest_questions():
+    """
+    AI-powered RTI Question Generator API endpoint (Phase 1).
+    Accepts JSON or form data:
+      - description: str (10 to 1000 characters)
+      - lang: str ('en' or 'hi', optional)
+
+    Returns JSON:
+      200: {"success": True, "data": {"subject": "...", "questions": [...]}}
+      400: {"success": False, "error": "Validation error message"}
+      503: {"success": False, "error": "AI service unavailable message"}
+
+    Privacy & Security:
+      - Never stores descriptions or generated questions in database, session, or logs.
+      - Input validation for string type, empty, min-length (10), and max-length (1000).
+    """
+    if request.is_json:
+        data = request.get_json(silent=True) or {}
+    else:
+        data = request.form.to_dict() if request.form else {}
+
+    description = data.get("description")
+    if description is None or not isinstance(description, str):
+        return jsonify({
+            "success": False,
+            "error": "A valid 'description' text is required."
+        }), 400
+
+    description_clean = description.strip()
+    if not description_clean or len(description_clean) < 10:
+        return jsonify({
+            "success": False,
+            "error": "Please describe your issue or the information needed in at least 10 characters."
+        }), 400
+
+    if len(description_clean) > 1000:
+        return jsonify({
+            "success": False,
+            "error": "Description cannot exceed 1000 characters."
+        }), 400
+
+    lang = data.get("lang")
+    if not lang or not isinstance(lang, str) or lang not in ("en", "hi"):
+        lang = get_language() or "en"
+
+    result = generate_rti_questions(description_clean, lang=lang)
+
+    if result.get("success"):
+        return jsonify({
+            "success": True,
+            "data": {
+                "subject": result.get("subject", ""),
+                "questions": result.get("questions", []),
+            }
+        }), 200
+    else:
+        return jsonify({
+            "success": False,
+            "error": result.get("error") or "AI service is currently unavailable. Please try again later."
+        }), 503
+

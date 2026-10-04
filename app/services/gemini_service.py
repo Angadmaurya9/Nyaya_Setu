@@ -26,6 +26,7 @@ Returns:
 import os
 import logging
 import re
+import json
 
 logger = logging.getLogger(__name__)
 
@@ -255,3 +256,191 @@ def classify_issue(issue_text: str) -> dict:
         "method": "keyword",
         "error": "GEMINI_API_KEY not configured — using keyword classification",
     }
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# RTI Question Generation — Phase 1 Backend AI Integration
+# ─────────────────────────────────────────────────────────────────────────────
+
+_RTI_PROMPT = """You are an expert Right to Information (RTI) specialist for India assisting citizens in drafting formal RTI applications under the Right to Information Act, 2005.
+
+A citizen has provided the following description of their civic issue or information needed:
+\"\"\"
+{description}
+\"\"\"
+
+Requested language for output: {language_instruction}
+
+Your task:
+Analyze the citizen's description and generate:
+1. "subject": A concise, formal RTI subject line (e.g. "Seeking information under RTI Act, 2005 regarding ...").
+2. "questions": A list of 3 to 5 clear, factual, and specific information-seeking queries.
+
+Strict Statutory Rules under RTI Act, 2005:
+- Ground all queries strictly in Section 2(f) and Section 6(1) of the RTI Act, 2005.
+- Frame questions to request existing records, certified copies of documents, file notings, work orders, measurement books, sanction orders, bills/vouchers, inspection reports, attendance registers, circulars, or Action Taken Reports (ATR).
+- DO NOT ask "why", "how", or request explanations, reasons, or justifications (public authorities are not legally required under RTI to answer "why" or explain motives).
+- DO NOT invent or assume facts, names, dates, or reference numbers that were not provided by the citizen.
+- DO NOT make legal conclusions, accuse officials, or demand redressal/grievance settlement (RTI is for obtaining existing information/records, not for grievance redressal).
+- Keep each question concise, direct, and actionable.
+- Output MUST be in {language_instruction}.
+
+You MUST reply ONLY with a valid JSON object matching this exact schema:
+{{
+  "subject": "Concise RTI subject line",
+  "questions": [
+    "Specific factual query 1",
+    "Specific factual query 2",
+    "Specific factual query 3"
+  ]
+}}"""
+
+
+def generate_rti_questions(description: str, lang: str = "en") -> dict:
+    """
+    Generate an RTI subject line and specific factual information-seeking questions
+    based on a citizen's civic issue description using the Gemini API.
+
+    Parameters
+    ----------
+    description : str
+        Citizen's plain-language description of their issue or requested info.
+    lang : str
+        Language code ('en' or 'hi'). Defaults to 'en'.
+
+    Returns
+    -------
+    dict with keys:
+        success   (bool) — True if generation succeeded
+        subject   (str)  — Concise RTI subject line
+        questions (list) — List of specific factual RTI queries (str)
+        error     (str)  — Error message if failed, empty string if succeeded
+    """
+    if not description or not isinstance(description, str) or not description.strip():
+        return {
+            "success": False,
+            "subject": "",
+            "questions": [],
+            "error": "Description is required.",
+        }
+
+    safe_text = description.strip()
+    if len(safe_text) < 10:
+        return {
+            "success": False,
+            "subject": "",
+            "questions": [],
+            "error": "Description is too short. Please provide at least 10 characters.",
+        }
+
+    # Truncate at 1000 characters to prevent excessive token usage
+    safe_text = safe_text[:1000]
+
+    api_key = os.environ.get("GEMINI_API_KEY", "").strip()
+    if not api_key or api_key == "your-gemini-api-key-here":
+        return {
+            "success": False,
+            "subject": "",
+            "questions": [],
+            "error": "Gemini API key is not configured.",
+        }
+
+    # Determine language
+    is_hindi = (lang == "hi") or bool(re.search(r"[\u0900-\u097F]", safe_text))
+    language_instruction = "Hindi (Devanagari script)" if is_hindi else "English"
+
+    try:
+        import google.generativeai as genai
+        genai.configure(api_key=api_key)
+
+        model = genai.GenerativeModel(
+            model_name="gemini-flash-latest",
+            generation_config={
+                "temperature": 0.2,
+                "max_output_tokens": 1000,
+                "response_mime_type": "application/json",
+            },
+            safety_settings=[
+                {"category": "HARM_CATEGORY_HARASSMENT",        "threshold": "BLOCK_NONE"},
+                {"category": "HARM_CATEGORY_HATE_SPEECH",       "threshold": "BLOCK_NONE"},
+                {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_NONE"},
+                {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE"},
+            ],
+        )
+
+        prompt = _RTI_PROMPT.format(
+            description=safe_text,
+            language_instruction=language_instruction,
+        )
+        response = model.generate_content(prompt)
+
+        try:
+            raw_text = response.text.strip() if hasattr(response, "text") and response.text else ""
+        except Exception:
+            raw_text = ""
+
+        if not raw_text:
+            logger.warning("Gemini returned empty response for RTI questions.")
+            return {
+                "success": False,
+                "subject": "",
+                "questions": [],
+                "error": "AI returned an empty response.",
+            }
+
+        # Extract outermost JSON object if model included conversational preamble or code fences
+        json_match = re.search(r"\{.*\}", raw_text, flags=re.DOTALL)
+        json_str = json_match.group(0) if json_match else raw_text.strip()
+
+        data = json.loads(json_str)
+        if not isinstance(data, dict):
+            raise ValueError("Expected JSON object from model")
+
+        subject = str(data.get("subject", "")).strip()
+        raw_questions = data.get("questions", [])
+
+        if isinstance(raw_questions, str) and raw_questions.strip():
+            raw_questions = [raw_questions]
+        elif not isinstance(raw_questions, list):
+            raw_questions = []
+
+        cleaned_questions = []
+        for q in raw_questions:
+            if isinstance(q, str) and q.strip():
+                # Strip leading numbering like "1. ", "1) ", "- ", "* "
+                q_clean = re.sub(r"^\s*(?:\d+[\.\)]|\-|\*)\s*", "", q.strip())
+                if q_clean:
+                    cleaned_questions.append(q_clean)
+
+        if not subject and not cleaned_questions:
+            return {
+                "success": False,
+                "subject": "",
+                "questions": [],
+                "error": "Could not extract RTI subject or questions from model response.",
+            }
+
+        return {
+            "success": True,
+            "subject": subject,
+            "questions": cleaned_questions,
+            "error": "",
+        }
+
+    except (json.JSONDecodeError, ValueError) as json_err:
+        logger.warning("Failed to parse Gemini RTI response as JSON: %s", json_err)
+        return {
+            "success": False,
+            "subject": "",
+            "questions": [],
+            "error": "AI returned a malformed response format.",
+        }
+    except Exception as exc:
+        logger.error("Gemini RTI generation failure: %s", type(exc).__name__)
+        return {
+            "success": False,
+            "subject": "",
+            "questions": [],
+            "error": f"AI service unavailable: {type(exc).__name__}",
+        }
+
