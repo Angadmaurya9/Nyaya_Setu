@@ -1,0 +1,255 @@
+{# ============================================================
+   NyayaSetu — RTI Application Generator Form (app/templates/rti/generator.html)
+   Collects details to draft an application under Section 6(1) of RTI Act 2005.
+   ============================================================ #}
+{% extends "base.html" %}
+
+{% block title %}
+  {% if lang == 'hi' %}सूचना का अधिकार (RTI) आवेदन जनरेटर{% else %}RTI Application Generator — Section 6(1){% endif %}
+{% endblock %}
+
+{% block meta_description %}
+  {% if lang == 'hi' %}
+    सूचना का अधिकार अधिनियम 2005 के तहत औपचारिक आरटीआई आवेदन पत्र तैयार करें। पीडीएफ डाउनलोड और प्रिंट करने की सुविधा के साथ।
+  {% else %}
+    Draft a legally structured Right to Information (RTI) application under Section 6(1) of RTI Act 2005 with instant PDF download and print options.
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+
+{# ── PAGE HERO ────────────────────────────────────────────── #}
+<section class="page-hero section" aria-labelledby="rti-heading">
+  <div class="container">
+    <h1 class="page-hero__title" id="rti-heading">
+      📋 {% if lang == 'hi' %}RTI आवेदन जनरेटर{% else %}RTI Application Generator{% endif %}
+    </h1>
+    <p class="page-hero__subtitle">
+      {% if lang == 'hi' %}
+        सूचना का अधिकार अधिनियम, 2005 की धारा 6(1) के अंतर्गत औपचारिक आवेदन पत्र तैयार करें।
+      {% else %}
+        Generate a legally structured RTI application under Section 6(1) of the Right to Information Act, 2005.
+      {% endif %}
+    </p>
+  </div>
+</section>
+
+<section class="section" aria-label="RTI Application form">
+  <div class="container container--narrow">
+
+    {# Informational Disclaimer Callout #}
+    <div class="callout callout--info mb-section">
+      <span class="callout__icon" aria-hidden="true">ℹ️</span>
+      <div class="callout__body">
+        <strong>{% if lang == 'hi' %}महत्वपूर्ण आरटीआई निर्देश{% else %}Important RTI Instructions{% endif %}</strong>
+        <p>
+          {% if lang == 'hi' %}
+            यह टूल आपको एक औपचारिक प्रारूप (Draft) तैयार करके देता है। आवेदन जमा करने से पहले ₹10 का वैधानिक शुल्क (IPO, कोर्ट फीस स्टाम्प, या डीडी) संलग्न करना आवश्यक है (BPL आवेदक शुल्क-मुक्त हैं)।
+          {% else %}
+            This generator produces a standardized draft. Prior to physical submission, ensure you attach the ₹10 statutory fee via Indian Postal Order (IPO), Court Fee Stamp, or Demand Draft (BPL applicants are exempt under Section 7(5)).
+          {% endif %}
+        </p>
+      </div>
+    </div>
+
+    <div class="card">
+      <form method="POST" action="{{ url_for('rti.generate') }}" class="rti-form" id="rti-form" novalidate>
+
+        <h2 style="font-size: 1.25rem; margin-top: 0; margin-bottom: var(--space-4); border-bottom: 2px solid var(--color-border); padding-bottom: var(--space-2);">
+          👤 {% if lang == 'hi' %}1. आवेदक का विवरण (Applicant Details){% else %}1. Applicant Details{% endif %}
+        </h2>
+
+        <div class="form-group">
+          <label for="applicant_name" class="form-label">
+            {% if lang == 'hi' %}आवेदक का पूरा नाम{% else %}Full Name of Applicant{% endif %}
+            <span class="form-label__required" aria-hidden="true">*</span>
+          </label>
+          <input type="text" id="applicant_name" name="applicant_name" class="form-input"
+                 value="{{ form_data.applicant_name if form_data else '' }}"
+                 placeholder="{% if lang == 'hi' %}उदा. रमेश कुमार शर्मा{% else %}e.g., Ramesh Kumar Sharma{% endif %}" required />
+        </div>
+
+        <div class="form-group">
+          <label for="applicant_address" class="form-label">
+            {% if lang == 'hi' %}पत्राचार का पूर्ण पता (पिन कोड सहित){% else %}Complete Address for Correspondence (with PIN){% endif %}
+            <span class="form-label__required" aria-hidden="true">*</span>
+          </label>
+          <textarea id="applicant_address" name="applicant_address" class="form-textarea" rows="3"
+                    placeholder="{% if lang == 'hi' %}मकान नं., गली, मोहल्ला/गांव, जिला, राज्य, पिन कोड{% else %}House No., Street, City/District, State, PIN Code{% endif %}" required>{{ form_data.applicant_address if form_data else '' }}</textarea>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4);">
+          <div class="form-group">
+            <label for="phone" class="form-label">
+              {% if lang == 'hi' %}मोबाइल / फोन नंबर{% else %}Phone / Mobile Number{% endif %}
+            </label>
+            <input type="text" id="phone" name="phone" class="form-input"
+                   value="{{ form_data.phone if form_data else '' }}"
+                   placeholder="{% if lang == 'hi' %}10 अंकों का मोबाइल नंबर{% else %}10-digit Mobile Number{% endif %}" />
+          </div>
+          <div class="form-group">
+            <label for="email" class="form-label">
+              {% if lang == 'hi' %}ईमेल पता (वैकल्पिक){% else %}Email Address (Optional){% endif %}
+            </label>
+            <input type="email" id="email" name="email" class="form-input"
+                   value="{{ form_data.email if form_data else '' }}"
+                   placeholder="yourname@example.com" />
+          </div>
+        </div>
+
+        <h2 style="font-size: 1.25rem; margin-top: var(--space-6); margin-bottom: var(--space-4); border-bottom: 2px solid var(--color-border); padding-bottom: var(--space-2);">
+          🏛️ {% if lang == 'hi' %}2. सार्वजनिक प्राधिकरण / विभाग (Public Authority Details){% else %}2. Public Authority Details{% endif %}
+        </h2>
+
+        <div class="form-group">
+          <label for="public_authority" class="form-label">
+            {% if lang == 'hi' %}विभाग या कार्यालय का नाम{% else %}Public Authority / Department Name{% endif %}
+            <span class="form-label__required" aria-hidden="true">*</span>
+          </label>
+          <input type="text" id="public_authority" name="public_authority" class="form-input"
+                 value="{{ form_data.public_authority if form_data else '' }}"
+                 placeholder="{% if lang == 'hi' %}उदा. नगर निगम दिल्ली / लोक निर्माण विभाग / माध्यमिक शिक्षा बोर्ड{% else %}e.g., Municipal Corporation of Delhi / Public Works Department / CBSE{% endif %}" required />
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4);">
+          <div class="form-group">
+            <label for="pio_designation" class="form-label">
+              {% if lang == 'hi' %}अधिकारी का पदनाम{% else %}PIO Designation{% endif %}
+            </label>
+            <input type="text" id="pio_designation" name="pio_designation" class="form-input"
+                   value="{{ form_data.pio_designation if form_data else 'The Public Information Officer (PIO)' }}" />
+          </div>
+          <div class="form-group">
+            <label for="department_address" class="form-label">
+              {% if lang == 'hi' %}कार्यालय का पता / शहर{% else %}Department Office Location / City{% endif %}
+            </label>
+            <input type="text" id="department_address" name="department_address" class="form-input"
+                   value="{{ form_data.department_address if form_data else '' }}"
+                   placeholder="{% if lang == 'hi' %}मुख्यालय, सिविल लाइन्स, नई दिल्ली{% else %}Head Office, Civil Lines, New Delhi{% endif %}" />
+          </div>
+        </div>
+
+        <h2 style="font-size: 1.25rem; margin-top: var(--space-6); margin-bottom: var(--space-4); border-bottom: 2px solid var(--color-border); padding-bottom: var(--space-2);">
+          📝 {% if lang == 'hi' %}3. वांछित सूचना का विवरण (Information Sought){% else %}3. Information Sought{% endif %}
+        </h2>
+
+        <div class="form-group">
+          <label for="subject" class="form-label">
+            {% if lang == 'hi' %}आरटीआई का विषय (Subject){% else %}Subject of Information{% endif %}
+            <span class="form-label__required" aria-hidden="true">*</span>
+          </label>
+          <input type="text" id="subject" name="subject" class="form-input"
+                 value="{{ form_data.subject if form_data else '' }}"
+                 placeholder="{% if lang == 'hi' %}उदा. वार्ड 12 में सड़क निर्माण व्यय और निविदा रिकॉर्ड के संबंध में सूचना{% else %}e.g., Information regarding road repair expenditure & tender records in Ward 12{% endif %}" required />
+        </div>
+
+        <div class="form-group">
+          <label for="info_requested" class="form-label">
+            {% if lang == 'hi' %}विशिष्ट प्रश्न / वांछित सूचना के बिंदु (प्रत्येक बिंदु नई पंक्ति में लिखें){% else %}Specific Queries / Information Points (One per line){% endif %}
+            <span class="form-label__required" aria-hidden="true">*</span>
+          </label>
+          <textarea id="info_requested" name="info_requested" class="form-textarea" rows="6"
+                    placeholder="{% if lang == 'hi' %}1. उक्त सड़क निर्माण कार्य की स्वीकृत लागत और ठेकेदार का नाम प्रदान करें।&#10;2. कार्य पूर्णता प्रमाण पत्र की सत्यापित प्रतिलिपि उपलब्ध कराएं।&#10;3. सामग्री परीक्षण रिपोर्ट की प्रमाणित प्रति प्रदान करें।{% else %}1. Please provide the approved budget and contractor details for the said road repair project.&#10;2. Please provide certified copy of the completion certificate.&#10;3. Please provide certified copies of quality audit and material inspection reports.{% endif %}" required>{{ form_data.info_requested if form_data else '' }}</textarea>
+          <span class="form-hint">
+            {% if lang == 'hi' %}
+              💡 <strong>सुझाव:</strong> प्रश्न सटीक और स्पष्ट रखें। 'क्यों' पूछने के बजाय अभिलेखों, बिलों, फाइलों और आदेशों की प्रमाणित प्रतियां मांगें।
+            {% else %}
+              💡 <strong>Tip:</strong> Keep queries factual. Request certified copies of records, orders, bills, and minutes rather than asking for opinions.
+            {% endif %}
+          </span>
+        </div>
+
+        {# Urgency Checkbox (Life or Liberty) #}
+        <div class="form-group" style="background: var(--color-surface-alt); padding: var(--space-4); border-radius: var(--radius-md); border: 1px dashed var(--color-border);">
+          <label style="display: flex; align-items: flex-start; gap: var(--space-2); cursor: pointer;">
+            <input type="checkbox" name="life_liberty" value="yes" style="margin-top: 4px;" {% if form_data and form_data.life_liberty == 'yes' %}checked{% endif %} />
+            <span>
+              <strong>{% if lang == 'hi' %}क्या यह मामला किसी नागरिक के जीवन अथवा स्वतंत्रता (Life or Liberty) से संबंधित है?{% else %}Does this concern Life or Liberty of a person?{% endif %}</strong><br/>
+              <span class="form-hint" style="margin-top: 2px;">
+                {% if lang == 'hi' %}
+                  धारा 7(1) के अनुसार, जीवन और स्वतंत्रता से संबंधित सूचना 48 घंटों के भीतर दी जानी अनिवार्य है।
+                {% else %}
+                  Under the proviso to Section 7(1) of RTI Act 2005, information concerning life or liberty must be provided within 48 hours.
+                {% endif %}
+              </span>
+            </span>
+          </label>
+        </div>
+
+        <h2 style="font-size: 1.25rem; margin-top: var(--space-6); margin-bottom: var(--space-4); border-bottom: 2px solid var(--color-border); padding-bottom: var(--space-2);">
+          💰 {% if lang == 'hi' %}4. शुल्क और प्रेषण विवरण (Fee & Delivery Details){% else %}4. Fee & Delivery Details{% endif %}
+        </h2>
+
+        <div class="form-group">
+          <label for="fee_mode" class="form-label">
+            {% if lang == 'hi' %}आवेदन शुल्क भुगतान का तरीका (₹10 वैधानिक शुल्क){% else %}Statutory Application Fee Mode (₹10 prescribed fee){% endif %}
+          </label>
+          <select id="fee_mode" name="fee_mode" class="form-select">
+            <option value="ipo">{% if lang == 'hi' %}भारतीय पोस्टल ऑर्डर (IPO - ₹10){% else %}Indian Postal Order (IPO) — ₹10{% endif %}</option>
+            <option value="court_fee">{% if lang == 'hi' %}कोर्ट फीस स्टाम्प (₹10){% else %}Court Fee Stamp — ₹10{% endif %}</option>
+            <option value="dd">{% if lang == 'hi' %}डिमांड ड्राफ्ट / बैंकर्स चेक (₹10){% else %}Demand Draft / Banker's Cheque — ₹10{% endif %}</option>
+            <option value="bpl">{% if lang == 'hi' %}गरीबी रेखा से नीचे (BPL) — धारा 7(5) के तहत शुल्क मुक्त{% else %}Below Poverty Line (BPL) — Fee Exempt under Sec 7(5){% endif %}</option>
+            <option value="online">{% if lang == 'hi' %}ऑनलाइन पोर्टल भुगतान (rtionline.gov.in){% else %}Online Portal Payment (rtionline.gov.in){% endif %}</option>
+          </select>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4);">
+          <div class="form-group">
+            <label for="fee_details" class="form-label">
+              {% if lang == 'hi' %}पोस्टल ऑर्डर / डीडी क्रमांक (वैकल्पिक){% else %}IPO / DD Instrument Number (Optional){% endif %}
+            </label>
+            <input type="text" id="fee_details" name="fee_details" class="form-input"
+                   value="{{ form_data.fee_details if form_data else '' }}"
+                   placeholder="e.g. 54F 123456" />
+          </div>
+          <div class="form-group">
+            <label for="bpl_card_no" class="form-label">
+              {% if lang == 'hi' %}BPL कार्ड / राशन कार्ड नं. (यदि लागू हो){% else %}BPL Card No. (If fee exempt){% endif %}
+            </label>
+            <input type="text" id="bpl_card_no" name="bpl_card_no" class="form-input"
+                   value="{{ form_data.bpl_card_no if form_data else '' }}"
+                   placeholder="BPL-12345-XY" />
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--space-4);">
+          <div class="form-group">
+            <label for="delivery_mode" class="form-label">
+              {% if lang == 'hi' %}सूचना प्राप्ति का माध्यम{% else %}Delivery Mode{% endif %}
+            </label>
+            <select id="delivery_mode" name="delivery_mode" class="form-select">
+              <option value="Speed Post">{% if lang == 'hi' %}स्पीड पोस्ट (पंजीकृत डाक){% else %}Speed Post (Registered Post){% endif %}</option>
+              <option value="In Person">{% if lang == 'hi' %}व्यक्तिगत रूप से (दस्तबदस्त){% else %}In Person (Collection){% endif %}</option>
+              <option value="Email / Electronic">{% if lang == 'hi' %}ईमेल / इलेक्ट्रॉनिक रूप में{% else %}Email / Electronic{% endif %}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="place" class="form-label">
+              {% if lang == 'hi' %}स्थान (Place){% else %}Place{% endif %}
+            </label>
+            <input type="text" id="place" name="place" class="form-input"
+                   value="{{ form_data.place if form_data else '' }}"
+                   placeholder="{% if lang == 'hi' %}शहर / जिला{% else %}City / District{% endif %}" />
+          </div>
+          <div class="form-group">
+            <label for="date" class="form-label">
+              {% if lang == 'hi' %}तारीख (Date){% else %}Date{% endif %}
+            </label>
+            <input type="text" id="date" name="date" class="form-input"
+                   value="{{ form_data.date if form_data else today }}" />
+          </div>
+        </div>
+
+        <div class="form-group mt-section">
+          <button type="submit" class="btn btn--primary btn--large btn--full">
+            📄 {% if lang == 'hi' %}आरटीआई ड्राफ्ट तैयार करें और पूर्वावलोकन देखें →{% else %}Generate RTI Draft & Preview →{% endif %}
+          </button>
+        </div>
+
+      </form>
+    </div>
+
+  </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,166 @@
+{# ============================================================
+   NyayaSetu — Editable RTI Draft Preview (app/templates/rti/preview.html)
+   Displays generated RTI draft with edit, copy, print, and PDF export features.
+   ============================================================ #}
+{% extends "base.html" %}
+
+{% block title %}
+  {% if lang == 'hi' %}आरटीआई ड्राफ्ट पूर्वावलोकन और संपादन{% else %}RTI Draft Preview & Actions{% endif %}
+{% endblock %}
+
+{% block content %}
+
+<section class="page-hero section">
+  <div class="container">
+    <h1 class="page-hero__title">
+      📄 {% if lang == 'hi' %}आरटीआई आवेदन ड्राफ्ट पूर्वावलोकन{% else %}RTI Application Draft Preview{% endif %}
+    </h1>
+    <p class="page-hero__subtitle">
+      {% if lang == 'hi' %}
+        नीचे दिए गए आवेदन की समीक्षा करें। आप आवश्यकतानुसार पाठ को सीधे संपादित कर सकते हैं।
+      {% else %}
+        Review your generated RTI application below. You can edit the text directly before downloading or printing.
+      {% endif %}
+    </p>
+  </div>
+</section>
+
+<section class="section" aria-label="RTI Application Preview">
+  <div class="container">
+
+    {# Informational Disclaimer Note #}
+    <div class="callout callout--warning mb-section no-print">
+      <span class="callout__icon" aria-hidden="true">⚠️</span>
+      <div class="callout__body">
+        <strong>{% if lang == 'hi' %}जमा करने से पूर्व आवश्यक जांच (Important Draft Verification){% else %}Important Verification Notice{% endif %}</strong>
+        <p>
+          {% if lang == 'hi' %}
+            यह आवेदन केवल एक प्रारूप (Draft) है। कृपया जमा करने से पहले सभी तथ्यों, पते और संलग्न ₹10 के पोस्टल ऑर्डर/स्टाम्प विवरण की जांच करें। अपने आवेदन की एक प्रति तथा डाक पावती (Speed Post Receipt) भविष्य के लिए सुरक्षित रखें।
+          {% else %}
+            This application is a standardized draft. Verify all facts, addresses, and fee attachments before submission. Retain a photocopy of this signed application and the postal booking receipt for your records.
+          {% endif %}
+        </p>
+      </div>
+    </div>
+
+    {# Action Buttons Bar #}
+    <div class="rti-actions-bar no-print">
+      <div class="rti-actions-bar__left">
+        <a href="{{ url_for('rti.generator') }}" class="btn btn--outline btn--small">
+          ← {% if lang == 'hi' %}फॉर्म विवरण बदलें{% else %}Edit Form Details{% endif %}
+        </a>
+      </div>
+      <div class="rti-actions-bar__right">
+        <button type="button" class="btn btn--outline btn--small" id="copy-btn">
+          📋 {% if lang == 'hi' %}टेक्स्ट कॉपी करें{% else %}Copy Draft Text{% endif %}
+        </button>
+        <button type="button" class="btn btn--outline btn--small" id="print-btn" onclick="window.print()">
+          🖨️ {% if lang == 'hi' %}प्रिंट करें{% else %}Print Application{% endif %}
+        </button>
+        <button type="button" class="btn btn--primary btn--small" id="download-pdf-btn">
+          📥 {% if lang == 'hi' %}PDF डाउनलोड करें{% else %}Download as PDF{% endif %}
+        </button>
+      </div>
+    </div>
+
+    {# Editable Draft Display #}
+    <div class="card rti-preview-card">
+      <div class="rti-preview-header no-print">
+        <span class="badge badge--verified">
+          ✓ {% if lang == 'hi' %}धारा 6(1) के अनुसार वैधानिक प्रारूप{% else %}Statutory Section 6(1) Draft{% endif %}
+        </span>
+        <span class="text-muted" style="font-size: 0.85rem;">
+          ✏️ {% if lang == 'hi' %}आप नीचे दिए गए बॉक्स में सीधे बदलाव कर सकते हैं{% else %}Directly editable text box{% endif %}
+        </span>
+      </div>
+
+      <form id="export-form" method="POST" action="{{ url_for('rti.export_pdf') }}">
+        <input type="hidden" name="applicant_name" value="{{ data.applicant_name }}" />
+        <textarea
+          id="draft-textarea"
+          name="draft_text"
+          class="rti-draft-textarea"
+          rows="26"
+          spellcheck="false"
+          aria-label="Editable RTI draft"
+        >{{ draft_text }}</textarea>
+      </form>
+    </div>
+
+    {# Post Submission Next Steps Guide #}
+    <div class="card mt-section no-print" style="background: var(--color-surface-alt);">
+      <h3 style="font-size: 1.1rem; margin-top: 0; margin-bottom: var(--space-3);">
+        📬 {% if lang == 'hi' %}आवेदन जमा करने के बाद क्या करें? (Next Steps){% else %}Submission Checklist & Next Steps{% endif %}
+      </h3>
+      <ol style="margin-bottom: 0; padding-left: var(--space-6);">
+        <li style="margin-bottom: var(--space-2);">
+          {% if lang == 'hi' %}
+            <strong>हस्ताक्षर करें:</strong> प्रिंटआउट निकालकर नीचे अपने हस्ताक्षर या अंगूठे का निशान लगाएं।
+          {% else %}
+            <strong>Sign the Application:</strong> Print the document and affix your signature or thumb impression at the bottom.
+          {% endif %}
+        </li>
+        <li style="margin-bottom: var(--space-2);">
+          {% if lang == 'hi' %}
+            <strong>शुल्क संलग्न करें:</strong> ₹10 का भारतीय पोस्टल ऑर्डर (IPO) अथवा कोर्ट फीस स्टाम्प लगाएं (BPL आवेदक राशन कार्ड की प्रति संलग्न करें)।
+          {% else %}
+            <strong>Attach Statutory Fee:</strong> Affix a ₹10 IPO or Court Fee Stamp (or attach copy of BPL card if exempt).
+          {% endif %}
+        </li>
+        <li style="margin-bottom: var(--space-2);">
+          {% if lang == 'hi' %}
+            <strong>स्पीड पोस्ट द्वारा भेजें:</strong> संबंधित जन सूचना अधिकारी (PIO) को स्पीड पोस्ट या पंजीकृत डाक से भेजें।
+          {% else %}
+            <strong>Dispatch via Speed Post:</strong> Send the sealed envelope addressed to the Public Information Officer via Registered/Speed Post.
+          {% endif %}
+        </li>
+        <li>
+          {% if lang == 'hi' %}
+            <strong>30 दिनों की समय-सीमा:</strong> सूचना 30 दिनों में मिलना अनिवार्य है। उत्तर न मिलने पर 30 दिनों के भीतर प्रथम अपील दाखिल की जा सकती है।
+          {% else %}
+            <strong>Track 30-Day Limit:</strong> Public authorities must respond within 30 days. If unsatisfied or ignored, file a First Appeal within the subsequent 30 days.
+          {% endif %}
+        </li>
+      </ol>
+    </div>
+
+  </div>
+</section>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  (function () {
+    const copyBtn = document.getElementById('copy-btn');
+    const downloadPdfBtn = document.getElementById('download-pdf-btn');
+    const exportForm = document.getElementById('export-form');
+    const textarea = document.getElementById('draft-textarea');
+
+    if (downloadPdfBtn && exportForm) {
+      downloadPdfBtn.addEventListener('click', function () {
+        exportForm.submit();
+      });
+    }
+
+    if (copyBtn && textarea) {
+      copyBtn.addEventListener('click', function () {
+        textarea.select();
+        navigator.clipboard.writeText(textarea.value).then(function () {
+          const originalText = copyBtn.innerHTML;
+          copyBtn.innerHTML = '✓ {% if lang == "hi" %}कॉपी हो गया!{% else %}Copied!{% endif %}';
+          copyBtn.classList.add('btn--primary');
+          copyBtn.classList.remove('btn--outline');
+          setTimeout(function () {
+            copyBtn.innerHTML = originalText;
+            copyBtn.classList.remove('btn--primary');
+            copyBtn.classList.add('btn--outline');
+          }, 2500);
+        }).catch(function () {
+          alert('{% if lang == "hi" %}टेक्स्ट को स्वतः कॉपी नहीं किया जा सका। कृपया मैन्युअल कॉपी करें।{% else %}Unable to auto-copy. Please select and copy manually.{% endif %}');
+        });
+      });
+    }
+  }());
+</script>
+{% endblock %}

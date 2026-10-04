@@ -86,6 +86,7 @@ _KEYWORD_MAP = [
         "consumer", "उपभोक्ता", "defective", "खराब", "refund", "वापसी",
         "product", "service", "e-commerce", "amazon", "flipkart", "online shopping",
         "cheating by company", "bill", "overcharge", "insurance claim",
+        "warranty", "वारंटी", "damaged", "repair", "seller", "विक्रेता",
     ]),
     ("property", [
         "property", "संपत्ति", "land", "जमीन", "plot", "rent", "किराया",

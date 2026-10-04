@@ -62,6 +62,25 @@
 
       <div class="guidance-layout__main">
 
+        {% if category.slug == 'rti' %}
+        <div class="callout callout--info mb-section" style="border-left-color: var(--color-primary); background: var(--color-primary-light);">
+          <span class="callout__icon" aria-hidden="true">📝</span>
+          <div class="callout__body">
+            <strong>{% if lang == 'hi' %}औपचारिक RTI आवेदन पत्र तैयार करें{% else %}Draft a Formal RTI Application Now{% endif %}</strong>
+            <p>
+              {% if lang == 'hi' %}
+                सूचना का अधिकार अधिनियम, 2005 की धारा 6(1) के तहत आवेदन पत्र तैयार करने के लिए हमारे निःशुल्क <strong>RTI आवेदन जनरेटर</strong> का उपयोग करें।
+              {% else %}
+                Use our built-in <strong>RTI Application Generator</strong> to generate, edit, print, or download your formal Section 6(1) application as a PDF.
+              {% endif %}
+            </p>
+            <a href="{{ url_for('rti.generator') }}" class="btn btn--small btn--primary" style="margin-top: var(--space-2);">
+              📄 {% if lang == 'hi' %}RTI आवेदन जनरेटर खोलें →{% else %}Launch RTI Generator →{% endif %}
+            </a>
+          </div>
+        </div>
+        {% endif %}
+
         {% for item in guidance_items %}
         <article class="guidance-card card">
           <div class="guidance-card__header">

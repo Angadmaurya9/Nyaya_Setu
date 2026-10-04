@@ -41,7 +41,7 @@ NyayaSetu is a web application designed to help everyday citizens navigate the I
 
 ---
 
-## ✨ Features (Phase 1 & Phase 2)
+## ✨ Features (Phase 1, Phase 2 & Phase 3)
 
 | Feature | Phase | Status |
 |---------|-------|--------|
@@ -59,6 +59,14 @@ NyayaSetu is a web application designed to help everyday citizens navigate the I
 | Guidance Dashboard (`/guidance/<slug>`) with Step-by-Step Timeline | Phase 2 | ✅ Completed |
 | Strict Privacy Safeguard: Zero User Text Retention | Phase 2 | ✅ Completed |
 | Scope Correction: Schemes Discovery Removed & Redirected | Phase 2 | ✅ Completed |
+| RTI Application Generator Form (`/rti/`) | Phase 3 | ✅ Completed |
+| Statutory Section 6(1) RTI Draft Builder | Phase 3 | ✅ Completed |
+| Editable RTI Draft Preview & Copy Interface | Phase 3 | ✅ Completed |
+| ReportLab PDF Export (`/rti/export-pdf`) with A4 Page Layout | Phase 3 | ✅ Completed |
+| Dedicated Print Styles (`window.print()` Clean Output) | Phase 3 | ✅ Completed |
+| Statutory Fee & BPL Exemption Handling (Section 7(5)) | Phase 3 | ✅ Completed |
+| Proviso to Section 7(1) Life or Liberty 48-Hour Urgency Clause | Phase 3 | ✅ Completed |
+
 
 ---
 
@@ -118,7 +126,8 @@ NyayaSetu/
 ├── requirements.txt         # Dependencies (Flask, SQLAlchemy, python-dotenv, google-generativeai)
 ├── .env.example             # Environment variable template
 ├── .gitignore               # Git exclusions (.env, venv, instance/*.db, etc.)
-├── tests_phase2.py          # Automated test suite (7 comprehensive test cases)
+├── tests_phase2.py          # Phase 2 automated test suite (7 tests)
+├── tests_phase3.py          # Phase 3 automated test suite (7 tests: RTI & Regression)
 ├── README.md                # Project documentation
 │
 ├── app/                     # Main application package
@@ -135,11 +144,12 @@ NyayaSetu/
 │   │   ├── __init__.py
 │   │   ├── main.py          # Core routes: /, /about, /resources, /issue, /guidance/<slug>
 │   │   ├── legal.py         # Informational routes: /legal/disclaimer, /privacy, /terms
-│   │   └── contact.py       # Contact route: /contact (GET & POST)
+│   │   ├── contact.py       # Contact route: /contact (GET & POST)
+│   │   └── rti.py           # Phase 3: RTI Generator (/rti, /rti/generate, /rti/export-pdf)
 │   │
 │   ├── static/              # Static assets
 │   │   ├── css/
-│   │   │   └── main.css     # CSS Custom Properties, Dark/Light theme, Guidance Dashboard styles
+│   │   │   └── main.css     # CSS Custom Properties, Dark/Light theme, RTI & print styles
 │   │   └── js/
 │   │       └── main.js      # Vanilla JS (Theme toggle, hamburger menu, flash dismiss)
 │   │
@@ -152,6 +162,9 @@ NyayaSetu/
 │       │   ├── issue.html   # Problem description form with character counter
 │       │   ├── guidance.html# Action Guidance Dashboard (timeline, citations, helplines)
 │       │   └── contact.html # Contact form
+│       ├── rti/
+│       │   ├── generator.html# RTI Application Generator input form
+│       │   └── preview.html # Editable RTI draft preview with PDF download & print
 │       └── legal/
 │           ├── disclaimer.html
 │           ├── privacy.html

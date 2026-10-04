@@ -59,10 +59,12 @@ def create_app(config_class=None):
     from app.routes.main import main_bp
     from app.routes.legal import legal_bp
     from app.routes.contact import contact_bp
+    from app.routes.rti import rti_bp
 
     app.register_blueprint(main_bp)           # /  and general pages
     app.register_blueprint(legal_bp)          # /legal/...
     app.register_blueprint(contact_bp)        # /contact
+    app.register_blueprint(rti_bp)            # /rti/... (RTI Application Generator)
 
     # ------------------------------------------------------------------ #
     # Register custom Jinja2 template filters / globals

@@ -75,6 +75,12 @@
             </a>
           </li>
           <li class="navbar__item">
+            <a href="{{ url_for('rti.generator') }}"
+               class="navbar__link {% if current_path.startswith('/rti') %}navbar__link--active{% endif %}">
+              {% if lang == 'hi' %}RTI जनरेटर{% else %}RTI Generator{% endif %}
+            </a>
+          </li>
+          <li class="navbar__item">
             <a href="{{ url_for('main.resources') }}"
                class="navbar__link {% if current_path == '/resources' %}navbar__link--active{% endif %}">
               {% if lang == 'hi' %}संसाधन{% else %}Resources{% endif %}
@@ -167,6 +173,7 @@
           <ul>
             <li><a href="{{ url_for('main.index') }}">{% if lang == 'hi' %}होम{% else %}Home{% endif %}</a></li>
             <li><a href="{{ url_for('main.issue') }}">{% if lang == 'hi' %}समस्या समाधान{% else %}Action Guidance{% endif %}</a></li>
+            <li><a href="{{ url_for('rti.generator') }}">{% if lang == 'hi' %}RTI जनरेटर{% else %}RTI Generator{% endif %}</a></li>
             <li><a href="{{ url_for('main.resources') }}">{% if lang == 'hi' %}संसाधन{% else %}Resources{% endif %}</a></li>
             <li><a href="{{ url_for('main.about') }}">{% if lang == 'hi' %}हमारे बारे में{% else %}About{% endif %}</a></li>
           </ul>
