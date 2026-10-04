@@ -87,14 +87,20 @@
       <div class="tech-card">
         <span class="tech-card__icon">🤖</span>
         <span class="tech-card__name">Gemini API</span>
-        <span class="tech-card__desc">{% if lang == 'hi' %}Phase 2 — AI विश्लेषण{% else %}Phase 2 — AI analysis{% endif %}</span>
+        <span class="tech-card__desc">{% if lang == 'hi' %}AI कानूनी वर्गीकरण{% else %}AI legal classification{% endif %}</span>
+      </div>
+      <div class="tech-card">
+        <span class="tech-card__icon">📄</span>
+        <span class="tech-card__name">ReportLab</span>
+        <span class="tech-card__desc">{% if lang == 'hi' %}RTI पीडीएफ जनरेशन{% else %}RTI PDF generation{% endif %}</span>
       </div>
     </div>
 
-    <h2>{% if lang == 'hi' %}प्लेटफ़ॉर्म की मुख्य विशेषताएं (Phase 1 & 2){% else %}Platform Features (Phase 1 & 2){% endif %}</h2>
+    <h2>{% if lang == 'hi' %}प्लेटफ़ॉर्म की मुख्य विशेषताएं{% else %}Platform Features{% endif %}</h2>
     <ul>
       <li>{% if lang == 'hi' %}<strong>समस्या-से-कार्रवाई मार्गदर्शन:</strong> आम बोलचाल की भाषा में कानूनी समस्या का विवरण देकर वैधानिक उपचार पाना।{% else %}<strong>Problem-to-Action Guidance:</strong> Plain-language issue description mapped directly to procedural statutory remedies.{% endif %}</li>
       <li>{% if lang == 'hi' %}<strong>Gemini AI वर्गीकरण + नियमाधारित फ़ॉलबैक:</strong> अत्यधिक नियंत्रित AI प्रॉम्प्टिंग जो बिना भ्रामक सलाह के केवल सटीक कानूनी श्रेणी तय करता है।{% else %}<strong>Gemini AI Classification + Rule-Based Fallback:</strong> Strictly constrained AI prompt that classifies issue categories without hallucinating legal opinions.{% endif %}</li>
+      <li>{% if lang == 'hi' %}<strong>RTI आवेदन जनरेटर:</strong> धारा 6(1) के अंतर्गत आरटीआई आवेदन तैयार करना, संपादन योग्य पूर्वावलोकन, पीडीएफ डाउनलोड और प्रिंट।{% else %}<strong>RTI Application Generator:</strong> Statutory Section 6(1) draft drafting, editable live preview, ReportLab PDF download, and print support.{% endif %}</li>
       <li>{% if lang == 'hi' %}<strong>सत्यापित सांविधिक डेटाबेस:</strong> 8 कानूनी श्रेणियां, चरणबद्ध प्रक्रियाएं, आधिकारिक अधिनियम, और पोर्टल लिंक।{% else %}<strong>Verified Statutory Knowledge Base:</strong> 8 legal categories, concrete action steps, official acts, and government portal citations.{% endif %}</li>
       <li>{% if lang == 'hi' %}<strong>गोपनीयता-प्रथम डिज़ाइन:</strong> उपयोगकर्ता की समस्या का पाठ्य डेटाबेस में कभी संग्रहित नहीं होता; केवल अनाम श्रेणी काउंटर रिकॉर्ड होते हैं।{% else %}<strong>Privacy-First & Zero Retention:</strong> Raw user text is never stored in the database; only anonymous aggregate counters are logged.{% endif %}</li>
       <li>{% if lang == 'hi' %}<strong>द्विभाषी इंटरफ़ेस:</strong> हिन्दी और अंग्रेज़ी दोनों भाषाओं में पूर्ण समर्थन।{% else %}<strong>Bilingual Interface:</strong> Full support for Hindi and English across all pages and guidance.{% endif %}</li>

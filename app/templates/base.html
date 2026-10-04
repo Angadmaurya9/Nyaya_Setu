@@ -92,12 +92,6 @@
               {% if lang == 'hi' %}हमारे बारे में{% else %}About{% endif %}
             </a>
           </li>
-          <li class="navbar__item">
-            <a href="{{ url_for('contact.contact') }}"
-               class="navbar__link {% if current_path == '/contact' %}navbar__link--active{% endif %}">
-              {% if lang == 'hi' %}संपर्क{% else %}Contact{% endif %}
-            </a>
-          </li>
         </ul>
       </nav>
 
