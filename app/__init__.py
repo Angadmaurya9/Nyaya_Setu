@@ -73,6 +73,22 @@ def create_app(config_class=None):
     register_template_helpers(app)
 
     # ------------------------------------------------------------------ #
+    # Register error handlers (safe user-friendly responses)
+    # ------------------------------------------------------------------ #
+    from flask import render_template
+    from app.utils import get_language
+
+    @app.errorhandler(404)
+    def handle_404(e):
+        lang = get_language()
+        return render_template("errors/404.html", lang=lang), 404
+
+    @app.errorhandler(500)
+    def handle_500(e):
+        lang = get_language()
+        return render_template("errors/500.html", lang=lang), 500
+
+    # ------------------------------------------------------------------ #
     # Create database tables (if they don't already exist)
     # ------------------------------------------------------------------ #
     with app.app_context():

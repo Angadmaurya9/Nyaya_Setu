@@ -194,10 +194,21 @@ def guidance_dashboard(slug):
         category = LegalCategory.query.filter_by(slug="other").first()
         slug = "other"
 
-    guidance_items = LegalGuidance.query.filter_by(
-        category_id=category.id,
-        verified=True
-    ).order_by(LegalGuidance.order_index).all()
+    guidance_items = []
+    if category and category.id:
+        guidance_items = LegalGuidance.query.filter_by(
+            category_id=category.id,
+            verified=True
+        ).order_by(LegalGuidance.order_index).all()
+    elif not category:
+        category = LegalCategory(
+            slug="other",
+            name_en="General Legal Aid",
+            name_hi="सामान्य विधिक सहायता",
+            description_en="General citizen rights and free legal assistance under NALSA.",
+            description_hi="नालसा के तहत सामान्य नागरिक अधिकार और निःशुल्क कानूनी सहायता।",
+            icon="⚖️"
+        )
 
     # Retrieve all helplines and filter relevant ones
     all_helplines = Helpline.query.all()

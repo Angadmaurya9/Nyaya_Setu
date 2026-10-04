@@ -166,18 +166,32 @@ def generate():
     subject = request.form.get("subject", "").strip()
     info_requested = request.form.get("info_requested", "").strip()
 
-    # Basic Validation
+    # Basic and length validations
     errors = []
     if not applicant_name:
         errors.append("Applicant name is required." if lang == "en" else "आवेदक का नाम आवश्यक है।")
+    elif len(applicant_name) > 150:
+        errors.append("Applicant name cannot exceed 150 characters.")
+
     if not applicant_address:
         errors.append("Address for correspondence is required." if lang == "en" else "पत्राचार का पता आवश्यक है।")
+    elif len(applicant_address) > 1000:
+        errors.append("Address cannot exceed 1000 characters.")
+
     if not public_authority:
         errors.append("Public authority / Department name is required." if lang == "en" else "सार्वजनिक प्राधिकरण / विभाग का नाम आवश्यक है।")
+    elif len(public_authority) > 250:
+        errors.append("Public authority name cannot exceed 250 characters.")
+
     if not subject:
         errors.append("Subject of RTI is required." if lang == "en" else "आरटीआई का विषय आवश्यक है।")
+    elif len(subject) > 300:
+        errors.append("Subject cannot exceed 300 characters.")
+
     if not info_requested:
         errors.append("Information requested is required." if lang == "en" else "वांछित सूचना का विवरण आवश्यक है।")
+    elif len(info_requested) > 6000:
+        errors.append("Information requested cannot exceed 6000 characters.")
 
     if errors:
         for err in errors:
@@ -193,20 +207,20 @@ def generate():
     data_dict = {
         "applicant_name": applicant_name,
         "applicant_address": applicant_address,
-        "phone": request.form.get("phone", "").strip(),
-        "email": request.form.get("email", "").strip(),
+        "phone": request.form.get("phone", "").strip()[:30],
+        "email": request.form.get("email", "").strip()[:100],
         "public_authority": public_authority,
-        "pio_designation": request.form.get("pio_designation", "").strip() or "The Public Information Officer (PIO)",
-        "department_address": request.form.get("department_address", "").strip(),
+        "pio_designation": (request.form.get("pio_designation", "").strip() or "The Public Information Officer (PIO)")[:150],
+        "department_address": request.form.get("department_address", "").strip()[:500],
         "subject": subject,
         "info_requested": info_requested,
         "life_liberty": request.form.get("life_liberty", "no"),
         "fee_mode": request.form.get("fee_mode", "ipo"),
-        "fee_details": request.form.get("fee_details", "").strip(),
-        "bpl_card_no": request.form.get("bpl_card_no", "").strip(),
-        "delivery_mode": request.form.get("delivery_mode", "Speed Post").strip(),
-        "date": request.form.get("date", "").strip() or datetime.now().strftime("%d/%m/%Y"),
-        "place": request.form.get("place", "").strip(),
+        "fee_details": request.form.get("fee_details", "").strip()[:100],
+        "bpl_card_no": request.form.get("bpl_card_no", "").strip()[:100],
+        "delivery_mode": request.form.get("delivery_mode", "Speed Post").strip()[:50],
+        "date": (request.form.get("date", "").strip() or datetime.now().strftime("%d/%m/%Y"))[:30],
+        "place": request.form.get("place", "").strip()[:100],
     }
 
     generated_text = build_rti_text(data_dict)
@@ -223,7 +237,10 @@ def generate():
 def export_pdf():
     """
     Generates a clean, professional, print-ready A4 PDF of the RTI draft using ReportLab.
+    Hardened against XML entity parsing errors, malformed markup, and memory exhaustion.
     """
+    import html
+
     draft_text = request.form.get("draft_text", "").strip()
     applicant_name = request.form.get("applicant_name", "Applicant").strip()
 
@@ -231,99 +248,109 @@ def export_pdf():
         flash("Cannot generate PDF from empty text.", "error")
         return redirect(url_for("rti.generator"))
 
-    buffer = io.BytesIO()
-    # 0.75 inch margins for standard official documentation
-    doc = SimpleDocTemplate(
-        buffer,
-        pagesize=A4,
-        leftMargin=54,
-        rightMargin=54,
-        topMargin=54,
-        bottomMargin=54
-    )
+    # Size ceiling to prevent memory exhaustion / DoS
+    if len(draft_text) > 30000:
+        flash("Draft text is too large to export to a single PDF document.", "error")
+        return redirect(url_for("rti.generator"))
 
-    styles = getSampleStyleSheet()
+    try:
+        buffer = io.BytesIO()
+        doc = SimpleDocTemplate(
+            buffer,
+            pagesize=A4,
+            leftMargin=54,
+            rightMargin=54,
+            topMargin=54,
+            bottomMargin=54
+        )
 
-    # Custom styles
-    title_style = ParagraphStyle(
-        "RtiTitle",
-        parent=styles["Heading2"],
-        fontName="Helvetica-Bold",
-        fontSize=12,
-        leading=15,
-        alignment=TA_CENTER,
-        spaceAfter=14
-    )
+        styles = getSampleStyleSheet()
 
-    body_style = ParagraphStyle(
-        "RtiBody",
-        parent=styles["Normal"],
-        fontName="Helvetica",
-        fontSize=10,
-        leading=14,
-        alignment=TA_LEFT,
-        spaceAfter=6
-    )
+        title_style = ParagraphStyle(
+            "RtiTitle",
+            parent=styles["Heading2"],
+            fontName="Helvetica-Bold",
+            fontSize=12,
+            leading=15,
+            alignment=TA_CENTER,
+            spaceAfter=14
+        )
 
-    footer_note_style = ParagraphStyle(
-        "RtiFooterNote",
-        parent=styles["Italic"],
-        fontName="Helvetica-Oblique",
-        fontSize=8,
-        leading=10,
-        alignment=TA_CENTER,
-        textColor=colors.gray
-    )
+        body_style = ParagraphStyle(
+            "RtiBody",
+            parent=styles["Normal"],
+            fontName="Helvetica",
+            fontSize=10,
+            leading=14,
+            alignment=TA_LEFT,
+            spaceAfter=6
+        )
 
-    story = []
+        footer_note_style = ParagraphStyle(
+            "RtiFooterNote",
+            parent=styles["Italic"],
+            fontName="Helvetica-Oblique",
+            fontSize=8,
+            leading=10,
+            alignment=TA_CENTER,
+            textColor=colors.gray
+        )
 
-    # Title
-    story.append(Paragraph("APPLICATION FOR SEEKING INFORMATION UNDER THE RIGHT TO INFORMATION ACT, 2005", title_style))
-    story.append(Paragraph("<b>[Under Section 6(1) of the RTI Act, 2005]</b>", ParagraphStyle("SubTitle", parent=title_style, fontSize=10, leading=12, spaceAfter=10)))
-    story.append(HRFlowable(width="100%", thickness=1, color=colors.black, spaceAfter=12))
+        story = []
 
-    # Convert draft lines to styled paragraphs
-    # We preserve paragraph blocks
-    paragraphs_raw = draft_text.split("\n\n")
+        # Title Block
+        story.append(Paragraph("APPLICATION FOR SEEKING INFORMATION UNDER THE RIGHT TO INFORMATION ACT, 2005", title_style))
+        story.append(Paragraph("<b>[Under Section 6(1) of the RTI Act, 2005]</b>", ParagraphStyle("SubTitle", parent=title_style, fontSize=10, leading=12, spaceAfter=10)))
+        story.append(HRFlowable(width="100%", thickness=1, color=colors.black, spaceAfter=12))
 
-    # If first paragraph has "FORM OF APPLICATION...", we skip or use as subheader
-    for block in paragraphs_raw:
-        clean_block = block.strip()
-        if not clean_block:
-            continue
+        # Convert draft blocks into styled paragraphs
+        paragraphs_raw = draft_text.split("\n\n")
 
-        # Skip duplicate title header if already in raw text
-        if "FORM OF APPLICATION FOR SEEKING INFORMATION" in clean_block:
-            continue
+        for block in paragraphs_raw:
+            clean_block = block.strip()
+            if not clean_block:
+                continue
 
-        # Format line breaks within block
-        formatted_html = clean_block.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\n", "<br/>")
+            # Skip duplicate title header if already in raw text
+            if "FORM OF APPLICATION FOR SEEKING INFORMATION" in clean_block:
+                continue
 
-        # Bold labels if starting with numbered sections
-        if formatted_html.startswith("1.") or formatted_html.startswith("2.") or formatted_html.startswith("3.") or formatted_html.startswith("4.") or formatted_html.startswith("5."):
-            p = Paragraph(f"<b>{formatted_html[:3]}</b>{formatted_html[3:]}", body_style)
-        else:
-            p = Paragraph(formatted_html, body_style)
+            # Safe HTML escape: prevents XML parsing crashes on '<', '>', '&'
+            escaped_text = html.escape(clean_block)
+            # Re-introduce line breaks for ReportLab
+            formatted_html = escaped_text.replace("\n", "<br/>")
 
-        story.append(p)
-        story.append(Spacer(1, 4))
+            # Bold standard numbered section heads if present
+            if len(formatted_html) >= 3 and (formatted_html.startswith("1.") or formatted_html.startswith("2.") or formatted_html.startswith("3.") or formatted_html.startswith("4.") or formatted_html.startswith("5.")):
+                p = Paragraph(f"<b>{formatted_html[:3]}</b>{formatted_html[3:]}", body_style)
+            else:
+                p = Paragraph(formatted_html, body_style)
 
-    # Trailing line & footer disclaimer
-    story.append(Spacer(1, 14))
-    story.append(HRFlowable(width="100%", thickness=0.5, color=colors.gray, spaceAfter=8))
-    story.append(Paragraph("Generated via NyayaSetu Citizen Rights Portal — Please verify all particulars and attach ₹10 statutory fee before submitting.", footer_note_style))
+            story.append(p)
+            story.append(Spacer(1, 4))
 
-    # Build PDF
-    doc.build(story)
-    buffer.seek(0)
+        # Trailing line & footer disclaimer
+        story.append(Spacer(1, 14))
+        story.append(HRFlowable(width="100%", thickness=0.5, color=colors.gray, spaceAfter=8))
+        story.append(Paragraph("Generated via NyayaSetu Citizen Rights Portal — Please verify all particulars and attach statutory ₹10 fee before submitting.", footer_note_style))
 
-    safe_name = "".join(c for c in applicant_name if c.isalnum() or c in (" ", "_")).rstrip()
-    safe_name = safe_name.replace(" ", "_") or "Applicant"
-    filename = f"RTI_Application_{safe_name}.pdf"
+        # Build PDF with graceful error recovery
+        doc.build(story)
+        buffer.seek(0)
 
-    return send_file(
-        buffer,
-        as_attachment=True,
-        download_name=filename,
-        mimetype="application/pdf"
-    )
+        # Sanitize filename: ASCII alphanumeric characters to guarantee strict RFC & WSGI header compliance
+        safe_ascii = "".join(c for c in applicant_name if c.isascii() and (c.isalnum() or c in (" ", "_"))).strip()
+        safe_ascii = safe_ascii.replace(" ", "_") or "Applicant"
+        filename = f"RTI_Application_{safe_ascii}.pdf"
+
+        return send_file(
+            buffer,
+            as_attachment=True,
+            download_name=filename,
+            mimetype="application/pdf"
+        )
+
+    except Exception as exc:
+        current_app.logger.error("ReportLab PDF generation failure: %s", exc)
+        flash("PDF generation encountered an error. Please review your text or use the Print button to print/save directly from your browser.", "error")
+        return redirect(url_for("rti.generator"))

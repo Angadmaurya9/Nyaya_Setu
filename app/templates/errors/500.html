@@ -1,0 +1,34 @@
+{# ============================================================
+   NyayaSetu — 500 Internal Error (app/templates/errors/500.html)
+   ============================================================ #}
+{% extends "base.html" %}
+
+{% block title %}
+  {% if lang == 'hi' %}तकनीकी त्रुटि (500){% else %}Server Error (500){% endif %}
+{% endblock %}
+
+{% block content %}
+<section class="page-hero section">
+  <div class="container text-center">
+    <span style="font-size: 4rem; display: block; margin-bottom: var(--space-4);" aria-hidden="true">⚙️</span>
+    <h1 class="page-hero__title">
+      500 — {% if lang == 'hi' %}तकनीकी समस्या उत्पन्न हुई{% else %}Internal Server Error{% endif %}
+    </h1>
+    <p class="page-hero__subtitle" style="margin-inline: auto;">
+      {% if lang == 'hi' %}
+        अनपेक्षित त्रुटि हुई है। आपकी कोई भी व्यक्तिगत जानकारी अथवा समस्या का विवरण सुरक्षित है और किसी भी सार्वजनिक रूप से उजागर नहीं हुआ है।
+      {% else %}
+        An unexpected error occurred while processing your request. No personal or sensitive data was exposed or stored.
+      {% endif %}
+    </p>
+    <div style="margin-top: var(--space-6); display: flex; justify-content: center; gap: var(--space-4); flex-wrap: wrap;">
+      <a href="{{ url_for('main.index') }}" class="btn btn--primary">
+        🏠 {% if lang == 'hi' %}मुख्य पृष्ठ पर लौटें{% else %}Return to Home{% endif %}
+      </a>
+      <a href="{{ url_for('contact.contact') }}" class="btn btn--outline">
+        📬 {% if lang == 'hi' %}सहायता से संपर्क करें{% else %}Contact Support{% endif %}
+      </a>
+    </div>
+  </div>
+</section>
+{% endblock %}
