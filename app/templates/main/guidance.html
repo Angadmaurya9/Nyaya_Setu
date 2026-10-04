@@ -1,0 +1,210 @@
+{# ============================================================
+   NyayaSetu — Action Guidance Dashboard (app/templates/main/guidance.html)
+   Displays verified procedural remedies, statutory citations, and helplines.
+   ============================================================ #}
+{% extends "base.html" %}
+
+{% block title %}
+  {{ category.name_hi if lang == 'hi' else category.name_en }} — {% if lang == 'hi' %}कार्रवाई मार्गदर्शन{% else %}Action Guidance{% endif %}
+{% endblock %}
+
+{% block meta_description %}
+  {% if lang == 'hi' %}
+    {{ category.name_hi }} के लिए आधिकारिक वैधानिक प्रक्रिया, चरणबद्ध कदम, और सरकारी हेल्पलाइन।
+  {% else %}
+    Verified statutory procedures, step-by-step action remedies, and official helplines for {{ category.name_en }}.
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+
+{# ── DASHBOARD HEADER ────────────────────────────────────── #}
+<section class="page-hero section">
+  <div class="container">
+    <div class="guidance-header">
+      <span class="guidance-header__icon" aria-hidden="true">{{ category.icon }}</span>
+      <div class="guidance-header__text">
+        <div class="guidance-badges">
+          <span class="badge badge--category">
+            {% if lang == 'hi' %}कानूनी श्रेणी{% else %}Identified Category{% endif %}
+          </span>
+          {% if method == 'gemini' %}
+            <span class="badge badge--ai" title="Classified by Google Gemini Generative AI">
+              ✨ {% if lang == 'hi' %}Gemini AI द्वारा वर्गीकृत{% else %}Classified by Gemini AI{% endif %}
+            </span>
+          {% elif method == 'keyword' %}
+            <span class="badge badge--rule" title="Classified by verified keyword rules">
+              ⚙️ {% if lang == 'hi' %}नियमाधारित वर्गीकरण{% else %}Rule-Based Match{% endif %}
+            </span>
+          {% elif method == 'manual' %}
+            <span class="badge badge--rule">
+              📌 {% if lang == 'hi' %}नागरिक द्वारा चयनित{% else %}Citizen Selected{% endif %}
+            </span>
+          {% endif %}
+        </div>
+        <h1 class="page-hero__title guidance-title">
+          {{ category.name_hi if lang == 'hi' else category.name_en }}
+        </h1>
+        <p class="page-hero__subtitle guidance-subtitle">
+          {{ category.description_hi if lang == 'hi' else category.description_en }}
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+{# ── MAIN DASHBOARD CONTENT ──────────────────────────────── #}
+<section class="section" aria-label="Action guidance and remedies">
+  <div class="container">
+
+    {# ── ACTION PROCEDURES & STATUTORY GUIDES ──────────────── #}
+    <div class="guidance-layout">
+
+      <div class="guidance-layout__main">
+
+        {% for item in guidance_items %}
+        <article class="guidance-card card">
+          <div class="guidance-card__header">
+            <h2 class="guidance-card__title">
+              {{ item.title_hi if lang == 'hi' else item.title_en }}
+            </h2>
+            {% if item.verified %}
+              <span class="badge badge--verified" title="Verified against official statutes and government portals">
+                ✓ {% if lang == 'hi' %}सत्यापित प्रक्रिया{% else %}Statutory Verified{% endif %}
+              </span>
+            {% endif %}
+          </div>
+
+          <p class="guidance-card__body">
+            {{ item.body_hi if lang == 'hi' else item.body_en }}
+          </p>
+
+          {# Step-by-Step Action Timeline #}
+          {% set steps = item.get_action_steps(lang) %}
+          {% if steps %}
+            <div class="action-steps-container">
+              <h3 class="action-steps-heading">
+                📋 {% if lang == 'hi' %}अनुशंसित प्रारंभिक कार्रवाई कदम:{% else %}Recommended Initial Action Steps:{% endif %}
+              </h3>
+              <ol class="action-steps-list">
+                {% for step in steps %}
+                  <li class="action-step-item">
+                    <span class="action-step-number">{{ loop.index }}</span>
+                    <span class="action-step-text">{{ step }}</span>
+                  </li>
+                {% endfor %}
+              </ol>
+            </div>
+          {% endif %}
+
+          {# Official Source Citation #}
+          <div class="source-citation">
+            <span class="source-citation__label">
+              🏛️ {% if lang == 'hi' %}आधिकारिक सांविधिक स्रोत व संदर्भ:{% else %}Official Statutory Source:{% endif %}
+            </span>
+            <span class="source-citation__name">{{ item.source_name }}</span>
+            {% if item.source_url %}
+              <a href="{{ item.source_url }}" target="_blank" rel="noopener noreferrer" class="source-citation__link">
+                {% if lang == 'hi' %}आधिकारिक पोर्टल देखें ↗{% else %}Visit Official Portal ↗{% endif %}
+              </a>
+            {% endif %}
+          </div>
+        </article>
+        {% else %}
+        <div class="card text-center">
+          <p>{% if lang == 'hi' %}इस श्रेणी के लिए मार्गदर्शन तैयार किया जा रहा है।{% else %}Guidance for this category is currently being compiled.{% endif %}</p>
+        </div>
+        {% endfor %}
+
+        {# Next Steps Navigation #}
+        <div class="guidance-nav-box">
+          <a href="{{ url_for('main.issue') }}" class="btn btn--outline">
+            ← {% if lang == 'hi' %}दूसरी समस्या जांचें{% else %}Check Another Issue{% endif %}
+          </a>
+          <a href="{{ url_for('main.resources') }}" class="btn btn--primary">
+            {% if lang == 'hi' %}सभी कानूनी संसाधन व पोर्टल देखें →{% else %}Browse All Portals & Helplines →{% endif %}
+          </a>
+        </div>
+
+      </div>{# /.guidance-layout__main #}
+
+      {# ── SIDEBAR: HELPLINES & LEGAL AID ────────────────────── #}
+      <aside class="guidance-layout__sidebar" aria-label="Support helplines">
+
+        <div class="card sidebar-card">
+          <h3 class="sidebar-card__title">
+            📞 {% if lang == 'hi' %}प्रासंगिक हेल्पलाइन व संपर्क{% else %}Relevant Helplines{% endif %}
+          </h3>
+          <p class="text-muted" style="margin-bottom: var(--space-4);">
+            {% if lang == 'hi' %}
+              तत्काल मार्गदर्शन और सहायता हेतु निःशुल्क सरकारी संपर्क:
+            {% else %}
+              Toll-free government numbers for immediate assistance:
+            {% endif %}
+          </p>
+
+          <div class="helpline-cards-stack">
+            {% for h in helplines %}
+            <div class="helpline-card">
+              <div class="helpline-card__top">
+                <span class="helpline-card__name">{{ h.name_hi if lang == 'hi' else h.name_en }}</span>
+                <span class="helpline-card__badge">{{ h.number }}</span>
+              </div>
+              <p class="helpline-card__scope">{{ h.scope_hi if lang == 'hi' else h.scope_en }}</p>
+              <div class="helpline-card__actions">
+                <a href="tel:{{ h.number }}" class="btn btn--small btn--primary">
+                  📞 {{ h.number }}
+                </a>
+                {% if h.source_url %}
+                  <a href="{{ h.source_url }}" target="_blank" rel="noopener noreferrer" class="btn btn--small btn--outline">
+                    ↗ {% if lang == 'hi' %}पोर्टल{% else %}Portal{% endif %}
+                  </a>
+                {% endif %}
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        {# Free Legal Aid Box #}
+        <div class="card sidebar-card mt-section" style="border-left: 4px solid var(--color-primary);">
+          <h3 class="sidebar-card__title">
+            ⚖️ {% if lang == 'hi' %}निःशुल्क कानूनी सहायता (NALSA){% else %}Free Legal Aid (NALSA){% endif %}
+          </h3>
+          <p style="font-size: 0.9rem; margin-bottom: var(--space-3);">
+            {% if lang == 'hi' %}
+              यदि आप अधिवक्ता शुल्क देने में असमर्थ हैं, तो विधिक सेवा प्राधिकरण अधिनियम के तहत आपको जिला न्यायालय में मुफ्त वकील मिल सकता है।
+            {% else %}
+              Under the Legal Services Authorities Act, eligible citizens can obtain free legal representation at District Courts.
+            {% endif %}
+          </p>
+          <a href="https://nalsa.gov.in" target="_blank" rel="noopener noreferrer" class="btn btn--small btn--outline btn--full">
+            NALSA Portal (15100) ↗
+          </a>
+        </div>
+
+      </aside>
+
+    </div>{# /.guidance-layout #}
+
+    {# Prominent Legal Disclaimer #}
+    <div class="callout callout--warning mt-section">
+      <span class="callout__icon" aria-hidden="true">⚠️</span>
+      <div class="callout__body">
+        <strong>
+          {% if lang == 'hi' %}महत्वपूर्ण कानूनी अस्वीकरण (Legal Information Disclaimer){% else %}Important Notice & Legal Disclaimer{% endif %}
+        </strong>
+        <p>
+          {% if lang == 'hi' %}
+            उपरोक्त जानकारी केवल सामान्य प्रक्रियात्मक जागरूकता और नागरिक अधिकारों के मार्गदर्शन के उद्देश्य से दी गई है। यह पेशेवर कानूनी सलाह नहीं है और कोई वकील-मुवक्किल संबंध स्थापित नहीं करती। किसी भी कानूनी कार्यवाही, याचिका दाखिल करने या विवाद में औपचारिक कदम उठाने से पूर्व योग्य अधिवक्ता से सलाह अवश्य लें।
+          {% else %}
+            The guidance provided above is for general statutory awareness and citizen self-help procedures only. It does not constitute formal legal advice and creates no attorney–client relationship. Always consult a licensed advocate or legal aid counsel before taking formal legal action in court.
+          {% endif %}
+        </p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+{% endblock %}

@@ -69,15 +69,9 @@
             </a>
           </li>
           <li class="navbar__item">
-            <a href="{{ url_for('main.about') }}"
-               class="navbar__link {% if current_path == '/about' %}navbar__link--active{% endif %}">
-              {% if lang == 'hi' %}हमारे बारे में{% else %}About{% endif %}
-            </a>
-          </li>
-          <li class="navbar__item">
-            <a href="{{ url_for('main.schemes') }}"
-               class="navbar__link {% if current_path == '/schemes' %}navbar__link--active{% endif %}">
-              {% if lang == 'hi' %}योजनाएं{% else %}Schemes{% endif %}
+            <a href="{{ url_for('main.issue') }}"
+               class="navbar__link {% if current_path == '/issue' %}navbar__link--active{% endif %}">
+              {% if lang == 'hi' %}समस्या समाधान{% else %}Action Guidance{% endif %}
             </a>
           </li>
           <li class="navbar__item">
@@ -87,9 +81,9 @@
             </a>
           </li>
           <li class="navbar__item">
-            <a href="{{ url_for('main.issue') }}"
-               class="navbar__link {% if current_path == '/issue' %}navbar__link--active{% endif %}">
-              {% if lang == 'hi' %}समस्या बताएं{% else %}Report Issue{% endif %}
+            <a href="{{ url_for('main.about') }}"
+               class="navbar__link {% if current_path == '/about' %}navbar__link--active{% endif %}">
+              {% if lang == 'hi' %}हमारे बारे में{% else %}About{% endif %}
             </a>
           </li>
           <li class="navbar__item">
@@ -172,9 +166,9 @@
           </h3>
           <ul>
             <li><a href="{{ url_for('main.index') }}">{% if lang == 'hi' %}होम{% else %}Home{% endif %}</a></li>
-            <li><a href="{{ url_for('main.about') }}">{% if lang == 'hi' %}हमारे बारे में{% else %}About{% endif %}</a></li>
-            <li><a href="{{ url_for('main.schemes') }}">{% if lang == 'hi' %}योजनाएं{% else %}Schemes{% endif %}</a></li>
+            <li><a href="{{ url_for('main.issue') }}">{% if lang == 'hi' %}समस्या समाधान{% else %}Action Guidance{% endif %}</a></li>
             <li><a href="{{ url_for('main.resources') }}">{% if lang == 'hi' %}संसाधन{% else %}Resources{% endif %}</a></li>
+            <li><a href="{{ url_for('main.about') }}">{% if lang == 'hi' %}हमारे बारे में{% else %}About{% endif %}</a></li>
           </ul>
         </div>
         <div class="footer__link-group">

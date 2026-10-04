@@ -9,9 +9,9 @@
 
 {% block meta_description %}
   {% if lang == 'hi' %}
-    NyayaSetu — भारतीय नागरिकों के लिए निःशुल्क कानूनी जानकारी, सरकारी योजनाएं और कानूनी सहायता संसाधन।
+    NyayaSetu — भारतीय नागरिकों के लिए समस्या-से-कार्रवाई कानूनी मार्गदर्शन और आधिकारिक विधिक सहायता संसाधन।
   {% else %}
-    NyayaSetu — Free legal information, government welfare schemes, and legal aid resources for Indian citizens.
+    NyayaSetu — Problem-to-Action legal guidance and verified official legal-aid resources for Indian citizens.
   {% endif %}
 {% endblock %}
 
@@ -30,19 +30,19 @@
       </h1>
       <p class="hero__subtitle">
         {% if lang == 'hi' %}
-          NyayaSetu आपको सरकारी कल्याण योजनाओं, निःशुल्क कानूनी सहायता केंद्रों
-          और अपने कानूनी अधिकारों को समझने में मदद करता है — बिल्कुल मुफ्त में।
+          अपनी कानूनी समस्या को सरल शब्दों में बताएं। NyayaSetu आपको संबंधित कानून,
+          चरणबद्ध कानूनी उपाय, आधिकारिक सरकारी पोर्टल और निःशुल्क हेल्पलाइन तक मार्गदर्शन करता है।
         {% else %}
-          NyayaSetu helps you navigate government welfare schemes,
-          free legal-aid centres, and understand your legal rights — completely free.
+          Describe your legal issue in everyday language. NyayaSetu guides you through
+          governing laws, step-by-step action procedures, official government portals, and free helplines.
         {% endif %}
       </p>
       <div class="hero__cta-group">
         <a href="{{ url_for('main.issue') }}" class="btn btn--primary btn--large">
-          {% if lang == 'hi' %}अपनी समस्या बताएं{% else %}Describe Your Issue{% endif %}
+          {% if lang == 'hi' %}अपनी समस्या बताएं →{% else %}Describe Your Issue →{% endif %}
         </a>
-        <a href="{{ url_for('main.schemes') }}" class="btn btn--outline btn--large">
-          {% if lang == 'hi' %}योजनाएं खोजें{% else %}Find Schemes{% endif %}
+        <a href="{{ url_for('main.resources') }}" class="btn btn--outline btn--large">
+          {% if lang == 'hi' %}कानूनी संसाधन देखें{% else %}View Legal Resources{% endif %}
         </a>
       </div>
     </div>
@@ -62,131 +62,83 @@
 <section class="stats-band" aria-label="Platform statistics">
   <div class="container stats-band__inner">
     <div class="stat-card">
-      <span class="stat-card__number">28+</span>
-      <span class="stat-card__label">{% if lang == 'hi' %}राज्य योजनाएं{% else %}State Schemes{% endif %}</span>
+      <span class="stat-card__number">8</span>
+      <span class="stat-card__label">{% if lang == 'hi' %}सत्यापित कानूनी श्रेणियां{% else %}Verified Legal Categories{% endif %}</span>
     </div>
     <div class="stat-card">
-      <span class="stat-card__number">100+</span>
-      <span class="stat-card__label">{% if lang == 'hi' %}कानूनी संसाधन{% else %}Legal Resources{% endif %}</span>
+      <span class="stat-card__number">100%</span>
+      <span class="stat-card__label">{% if lang == 'hi' %}आधिकारिक सांविधिक स्रोत{% else %}Official Statutory Sources{% endif %}</span>
     </div>
     <div class="stat-card">
       <span class="stat-card__number">2</span>
-      <span class="stat-card__label">{% if lang == 'hi' %}भाषाएं{% else %}Languages{% endif %}</span>
+      <span class="stat-card__label">{% if lang == 'hi' %}भाषाएं (हिन्दी / English){% else %}Languages (Hindi / English){% endif %}</span>
     </div>
     <div class="stat-card">
       <span class="stat-card__number">0₹</span>
-      <span class="stat-card__label">{% if lang == 'hi' %}हमेशा मुफ्त{% else %}Always Free{% endif %}</span>
+      <span class="stat-card__label">{% if lang == 'hi' %}हमेशा निःशुल्क{% else %}Always Free & Open{% endif %}</span>
     </div>
   </div>
 </section>
 
-{# ── FEATURE CARDS ────────────────────────────────────────── #}
-<section class="features section" aria-labelledby="features-heading">
+{# ── VERIFIED ISSUE CATEGORIES ───────────────────────────── #}
+<section class="section" aria-labelledby="categories-heading">
   <div class="container">
-    <h2 class="section__title" id="features-heading">
-      {% if lang == 'hi' %}हम क्या प्रदान करते हैं{% else %}What We Offer{% endif %}
+    <h2 class="section__title" id="categories-heading">
+      {% if lang == 'hi' %}सत्यापित कानूनी श्रेणियां और मार्गदर्शन{% else %}Explore Verified Legal Guidance{% endif %}
     </h2>
     <p class="section__subtitle">
       {% if lang == 'hi' %}
-        सरल भाषा में कानूनी जानकारी, हर भारतीय नागरिक के लिए।
+        सीधे किसी भी श्रेणी का चयन करके आधिकारिक सांविधिक प्रक्रिया और हेल्पलाइन देखें।
       {% else %}
-        Legal information in plain language, for every Indian citizen.
+        Directly select any verified category to view official statutory procedures and helplines.
       {% endif %}
     </p>
 
     <div class="features__grid">
-
+      {% for cat in categories %}
       <article class="feature-card">
-        <div class="feature-card__icon" aria-hidden="true">🔍</div>
+        <div class="feature-card__icon" aria-hidden="true">{{ cat.icon }}</div>
         <h3 class="feature-card__title">
-          {% if lang == 'hi' %}समस्या पहचान{% else %}Issue Identification{% endif %}
+          {{ cat.name_hi if lang == 'hi' else cat.name_en }}
         </h3>
         <p class="feature-card__desc">
-          {% if lang == 'hi' %}
-            अपनी कानूनी समस्या सरल शब्दों में बताएं और जानें कि यह किस श्रेणी में आती है।
-          {% else %}
-            Describe your legal issue in plain words and learn which legal category it falls under.
-          {% endif %}
+          {{ cat.description_hi if lang == 'hi' else cat.description_en }}
         </p>
-        <a href="{{ url_for('main.issue') }}" class="feature-card__link">
-          {% if lang == 'hi' %}शुरू करें →{% else %}Get Started →{% endif %}
+        <a href="{{ url_for('main.guidance_dashboard', slug=cat.slug) }}" class="feature-card__link">
+          {% if lang == 'hi' %}मार्गदर्शन देखें →{% else %}View Action Steps →{% endif %}
         </a>
       </article>
-
-      <article class="feature-card">
-        <div class="feature-card__icon" aria-hidden="true">🏦</div>
-        <h3 class="feature-card__title">
-          {% if lang == 'hi' %}कल्याण योजनाएं{% else %}Welfare Schemes{% endif %}
-        </h3>
-        <p class="feature-card__desc">
-          {% if lang == 'hi' %}
-            केंद्र और राज्य सरकार की योजनाओं के बारे में जानें और पात्रता की जांच करें।
-          {% else %}
-            Explore central and state government schemes and check your eligibility.
-          {% endif %}
-        </p>
-        <a href="{{ url_for('main.schemes') }}" class="feature-card__link">
-          {% if lang == 'hi' %}योजनाएं देखें →{% else %}Browse Schemes →{% endif %}
-        </a>
-      </article>
-
-      <article class="feature-card">
-        <div class="feature-card__icon" aria-hidden="true">📚</div>
-        <h3 class="feature-card__title">
-          {% if lang == 'hi' %}कानूनी संसाधन{% else %}Legal Resources{% endif %}
-        </h3>
-        <p class="feature-card__desc">
-          {% if lang == 'hi' %}
-            NALSA, eCourts, RTI पोर्टल जैसे आधिकारिक सरकारी संसाधनों के लिंक।
-          {% else %}
-            Curated links to official government resources like NALSA, eCourts, and the RTI portal.
-          {% endif %}
-        </p>
-        <a href="{{ url_for('main.resources') }}" class="feature-card__link">
-          {% if lang == 'hi' %}संसाधन देखें →{% else %}View Resources →{% endif %}
-        </a>
-      </article>
-
-      <article class="feature-card">
-        <div class="feature-card__icon" aria-hidden="true">🌐</div>
-        <h3 class="feature-card__title">
-          {% if lang == 'hi' %}द्विभाषी समर्थन{% else %}Bilingual Support{% endif %}
-        </h3>
-        <p class="feature-card__desc">
-          {% if lang == 'hi' %}
-            पूरी वेबसाइट हिन्दी और अंग्रेजी दोनों में उपलब्ध है।
-          {% else %}
-            The entire platform is available in both Hindi and English for wider accessibility.
-          {% endif %}
-        </p>
-        <a href="?lang={% if lang == 'hi' %}en{% else %}hi{% endif %}" class="feature-card__link">
-          {% if lang == 'hi' %}English में देखें →{% else %}हिन्दी में देखें →{% endif %}
-        </a>
-      </article>
-
-    </div>{# /.features__grid #}
+      {% endfor %}
+    </div>
   </div>
 </section>
 
-{# ── HOW IT WORKS ─────────────────────────────────────────── #}
+{# ── HOW PROBLEM-TO-ACTION WORKS ──────────────────────────── #}
 <section class="how-it-works section section--alt" aria-labelledby="how-heading">
   <div class="container">
     <h2 class="section__title" id="how-heading">
-      {% if lang == 'hi' %}यह कैसे काम करता है{% else %}How It Works{% endif %}
+      {% if lang == 'hi' %}समस्या-से-कार्रवाई प्रक्रिया कैसे काम करती है{% else %}How Problem-to-Action Guidance Works{% endif %}
     </h2>
+    <p class="section__subtitle">
+      {% if lang == 'hi' %}
+        नागरिकों को बिना जटिल शब्दावली के सही कानूनी दिशा दिखाना।
+      {% else %}
+        Guiding citizens toward legal remedies without confounding legal jargon.
+      {% endif %}
+    </p>
 
     <ol class="steps">
       <li class="step">
         <span class="step__number" aria-hidden="true">1</span>
         <div class="step__content">
           <h3 class="step__title">
-            {% if lang == 'hi' %}अपनी समस्या बताएं{% else %}Describe Your Issue{% endif %}
+            {% if lang == 'hi' %}समस्या विवरण (Plain Language Input){% else %}Describe Problem in Everyday Words{% endif %}
           </h3>
           <p class="step__desc">
             {% if lang == 'hi' %}
-              अपनी कानूनी समस्या या प्रश्न को अपने शब्दों में टाइप करें।
+              अपनी स्थिति को सरल शब्दों में हिन्दी या अंग्रेजी में लिखें। किसी वकील की भाषा की आवश्यकता नहीं है।
             {% else %}
-              Type your legal problem or question in your own words.
+              Explain your issue in everyday Hindi or English. No legal terminology required.
             {% endif %}
           </p>
         </div>
@@ -195,13 +147,13 @@
         <span class="step__number" aria-hidden="true">2</span>
         <div class="step__content">
           <h3 class="step__title">
-            {% if lang == 'hi' %}श्रेणी पहचानी जाती है{% else %}Category is Identified{% endif %}
+            {% if lang == 'hi' %}AI और नियमाधारित वर्गीकरण (Gemini API Classification){% else %}AI & Rule-Based Classification{% endif %}
           </h3>
           <p class="step__desc">
             {% if lang == 'hi' %}
-              सिस्टम यह पहचानता है कि आपकी समस्या किस कानूनी क्षेत्र से संबंधित है।
+              हमारा सिस्टम समस्या का विश्लेषण करके उसे उपभोक्ता, किरायेदारी, श्रम, आदि जैसी सांविधिक श्रेणियों से जोड़ता है।
             {% else %}
-              The system identifies which area of law your issue relates to.
+              The system securely classifies your issue into verified categories such as consumer, tenancy, labour, or RTI.
             {% endif %}
           </p>
         </div>
@@ -210,13 +162,13 @@
         <span class="step__number" aria-hidden="true">3</span>
         <div class="step__content">
           <h3 class="step__title">
-            {% if lang == 'hi' %}जानकारी और संसाधन मिलते हैं{% else %}Get Information & Resources{% endif %}
+            {% if lang == 'hi' %}चरणबद्ध कार्रवाई और सरकारी पोर्टल (Actionable Remedies){% else %}Action Steps & Official Portals{% endif %}
           </h3>
           <p class="step__desc">
             {% if lang == 'hi' %}
-              संबंधित कानूनी जानकारी, सरकारी योजनाएं और सहायता केंद्रों के लिंक प्राप्त करें।
+              सत्यापित अधिनियम, आवश्यक दस्तावेज, आधिकारिक सरकारी पोर्टल और आपातकालीन हेल्पलाइन प्राप्त करें।
             {% else %}
-              Receive relevant legal information, government schemes, and links to legal-aid centres.
+              Receive verified governing laws, concrete preliminary action steps, official government portal links, and helplines.
             {% endif %}
           </p>
         </div>
@@ -232,17 +184,17 @@
       <span class="callout__icon" aria-hidden="true">⚠️</span>
       <div class="callout__body">
         <strong>
-          {% if lang == 'hi' %}महत्वपूर्ण सूचना{% else %}Important Notice{% endif %}
+          {% if lang == 'hi' %}महत्वपूर्ण विधिक सूचना एवं अस्वीकरण{% else %}Important Notice & Legal Disclaimer{% endif %}
         </strong>
         <p>
           {% if lang == 'hi' %}
-            NyayaSetu केवल सामान्य कानूनी जानकारी प्रदान करता है — यह कानूनी सलाह नहीं है।
-            अपनी विशेष स्थिति के लिए किसी योग्य अधिवक्ता से सलाह लें।
-            <a href="{{ url_for('legal.disclaimer') }}">विस्तार से पढ़ें</a>
+            NyayaSetu केवल सामान्य कानूनी जानकारी और प्रक्रियात्मक मार्गदर्शन प्रदान करता है — यह पेशेवर कानूनी सलाह नहीं है।
+            हम कोई वकील-मुवक्किल संबंध स्थापित नहीं करते। अपनी विशिष्ट कानूनी स्थिति के लिए किसी योग्य अधिवक्ता या जिला विधिक सेवा प्राधिकरण (15100) से संपर्क करें।
+            <a href="{{ url_for('legal.disclaimer') }}">विस्तृत अस्वीकरण पढ़ें</a>।
           {% else %}
-            NyayaSetu provides general legal information only — this is not legal advice.
-            Consult a qualified advocate for advice specific to your situation.
-            <a href="{{ url_for('legal.disclaimer') }}">Read full disclaimer</a>
+            NyayaSetu provides general procedural information only — this does not constitute legal advice.
+            No lawyer–client relationship is established. For specific advice, consult a qualified advocate or the District Legal Services Authority (NALSA helpline 15100).
+            <a href="{{ url_for('legal.disclaimer') }}">Read full disclaimer</a>.
           {% endif %}
         </p>
       </div>

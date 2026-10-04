@@ -1,14 +1,19 @@
 {# ============================================================
-   NyayaSetu — Issue Page (app/templates/main/issue.html)
-   Phase 1: Textarea UI with character counter and validation only.
-   Phase 2: Will POST to AI analysis endpoint.
+   NyayaSetu — Issue Input & Problem-to-Action Page (app/templates/main/issue.html)
+   Phase 2: Fully connected to Gemini API & Keyword Classification.
    ============================================================ #}
 {% extends "base.html" %}
 
-{% block title %}{% if lang == 'hi' %}अपनी समस्या बताएं{% else %}Describe Your Issue{% endif %}{% endblock %}
+{% block title %}
+  {% if lang == 'hi' %}समस्या बताएं और मार्गदर्शन प्राप्त करें{% else %}Describe Your Legal Issue — Action Guidance{% endif %}
+{% endblock %}
+
 {% block meta_description %}
-  {% if lang == 'hi' %}अपनी कानूनी समस्या बताएं और सही जानकारी प्राप्त करें।
-  {% else %}Describe your legal issue in plain words to get relevant information.{% endif %}
+  {% if lang == 'hi' %}
+    अपनी कानूनी समस्या सरल भाषा में बताएं। NyayaSetu द्वारा सत्यापित कानूनी प्रक्रिया, अधिकार और सहायता हेल्पलाइन प्राप्त करें।
+  {% else %}
+    Describe your legal problem in plain language. Get verified statutory procedures, action steps, and official helplines from NyayaSetu.
+  {% endif %}
 {% endblock %}
 
 {% block content %}
@@ -16,15 +21,13 @@
 <section class="page-hero section" aria-labelledby="issue-heading">
   <div class="container">
     <h1 class="page-hero__title" id="issue-heading">
-      {% if lang == 'hi' %}अपनी समस्या बताएं{% else %}Describe Your Issue{% endif %}
+      {% if lang == 'hi' %}अपनी कानूनी समस्या बताएं{% else %}Describe Your Legal Issue{% endif %}
     </h1>
     <p class="page-hero__subtitle">
       {% if lang == 'hi' %}
-        अपनी कानूनी समस्या सरल शब्दों में लिखें।
-        किसी कानूनी शब्दावली का उपयोग करना जरूरी नहीं है।
+        अपनी समस्या को रोजमर्रा की भाषा में लिखें। AI और सत्यापित विधिक डेटाबेस आपकी समस्या का विश्लेषण कर चरणबद्ध मार्गदर्शन प्रदान करेंगे।
       {% else %}
-        Write your legal problem in plain words.
-        You don't need to use legal terminology.
+        Explain your situation in plain words. AI and our verified legal knowledge base will identify governing laws, concrete action steps, and official helplines.
       {% endif %}
     </p>
   </div>
@@ -33,43 +36,48 @@
 <section class="section" aria-label="Issue form">
   <div class="container container--narrow">
 
-    {# Privacy notice #}
+    {# Privacy Notice #}
     <div class="callout callout--info mb-section">
       <span class="callout__icon" aria-hidden="true">🔒</span>
       <div class="callout__body">
-        <strong>{% if lang == 'hi' %}गोपनीयता सूचना{% else %}Privacy Notice{% endif %}</strong>
+        <strong>{% if lang == 'hi' %}गोपनीयता और डेटा सुरक्षा गारंटी{% else %}Privacy & Zero-Retention Guarantee{% endif %}</strong>
         <p>
           {% if lang == 'hi' %}
-            Phase 1 में आपकी समस्या का विवरण हमारे सर्वर पर संग्रहित नहीं किया जाता।
-            <a href="{{ url_for('legal.privacy') }}">गोपनीयता नीति पढ़ें</a>।
+            आपकी व्यक्तिगत पहचान और समस्या का विवरण हमारे डेटाबेस में संग्रहित <strong>नहीं</strong> किया जाता। इसका उपयोग केवल वर्गीकरण के लिए किया जाता है।
+            <a href="{{ url_for('legal.privacy') }}">हमारी गोपनीयता नीति देखें</a>।
           {% else %}
-            In Phase 1, your issue description is not stored on our servers.
+            Your issue description and identity are <strong>never</strong> stored in our database. It is processed transiently to identify the applicable legal category.
             <a href="{{ url_for('legal.privacy') }}">Read our Privacy Policy</a>.
           {% endif %}
         </p>
       </div>
     </div>
 
-    {# The form — Phase 1: no POST action, just UI demonstration #}
+    {# Problem-to-Action Form #}
     <div class="issue-form-wrapper card">
-      <form id="issue-form" class="issue-form" novalidate aria-label="Issue description form">
+      <form id="issue-form" method="POST" action="{{ url_for('main.issue') }}" class="issue-form" novalidate aria-label="Issue description form">
 
         <div class="form-group">
           <label for="issue-category" class="form-label">
-            {% if lang == 'hi' %}समस्या की श्रेणी चुनें (वैकल्पिक){% else %}Select Issue Category (Optional){% endif %}
+            {% if lang == 'hi' %}सीधे श्रेणी चुनें (वैकल्पिक){% else %}Or Select Category Directly (Optional){% endif %}
           </label>
           <select id="issue-category" name="category" class="form-select">
             <option value="">
-              {% if lang == 'hi' %}— श्रेणी चुनें —{% else %}— Select a category —{% endif %}
+              {% if lang == 'hi' %}— AI को स्वतः पहचानने दें, या सूची से चुनें —{% else %}— Let AI detect automatically, or choose below —{% endif %}
             </option>
-            <option value="property">{% if lang == 'hi' %}संपत्ति विवाद{% else %}Property Dispute{% endif %}</option>
-            <option value="family">{% if lang == 'hi' %}पारिवारिक मामले{% else %}Family Matters{% endif %}</option>
-            <option value="labour">{% if lang == 'hi' %}श्रम / नौकरी{% else %}Labour / Employment{% endif %}</option>
-            <option value="consumer">{% if lang == 'hi' %}उपभोक्ता शिकायत{% else %}Consumer Complaint{% endif %}e</option>
-            <option value="rti">{% if lang == 'hi' %}सूचना का अधिकार (RTI){% else %}Right to Information (RTI){% endif %}</option>
-            <option value="criminal">{% if lang == 'hi' %}आपराधिक मामला{% else %}Criminal Matter{% endif %}</option>
-            <option value="other">{% if lang == 'hi' %}अन्य{% else %}Other{% endif %}</option>
+            {% for cat in categories %}
+              <option value="{{ cat.slug }}">
+                {{ cat.icon }} {{ cat.name_hi if lang == 'hi' else cat.name_en }}
+              </option>
+            {% endfor %}
           </select>
+          <span class="form-hint">
+            {% if lang == 'hi' %}
+              यदि आप अपनी श्रेणी पहले से जानते हैं, तो आप इसे सीधे चुन सकते हैं।
+            {% else %}
+              If you already know the legal category, you can select it directly here.
+            {% endif %}
+          </span>
         </div>
 
         <div class="form-group">
@@ -81,9 +89,9 @@
             id="issue-text"
             name="issue_text"
             class="form-textarea"
-            rows="8"
+            rows="7"
             maxlength="{{ max_chars }}"
-            placeholder="{% if lang == 'hi' %}उदाहरण: मेरे मकान मालिक ने बिना नोटिस के मेरा किराया बढ़ा दिया है...{% else %}e.g., My landlord increased my rent without notice...{% endif %}"
+            placeholder="{% if lang == 'hi' %}उदाहरण: मैंने एक ऑनलाइन शॉपिंग साइट से मोबाइल फोन खरीदा था, जो खराब निकला। कंपनी ने 30 दिन बाद भी रिफंड या रिप्लेसमेंट देने से मना कर दिया है...{% else %}e.g., I ordered a laptop online that arrived damaged. The company refused to replace it or issue a refund despite repeated emails and warranty coverage...{% endif %}"
             required
             aria-required="true"
             aria-describedby="char-counter issue-hint"
@@ -91,9 +99,9 @@
           <div class="textarea-footer">
             <span id="issue-hint" class="form-hint">
               {% if lang == 'hi' %}
-                कानूनी जानकारी के लिए — कोई व्यक्तिगत पहचान जानकारी न डालें।
+                कृपया कोई आधार नंबर, पासवर्ड, फोन नंबर या व्यक्तिगत पहचान विवरण न डालें।
               {% else %}
-                For legal information purposes — do not include personal identifying information.
+                Do not include sensitive personal details such as Aadhaar, phone numbers, or passwords.
               {% endif %}
             </span>
             <span id="char-counter" class="char-counter" aria-live="polite" aria-label="Character count">
@@ -103,26 +111,28 @@
           <p id="issue-error" class="form-error" role="alert" aria-live="assertive" hidden></p>
         </div>
 
-        {# Phase 2 notice instead of submit #}
+        <div class="form-group">
+          <button type="submit" id="submit-btn" class="btn btn--primary btn--large btn--full">
+            {% if lang == 'hi' %}
+              ⚖️ समस्या का विश्लेषण करें और मार्गदर्शन देखें
+            {% else %}
+              ⚖️ Analyze Issue & Get Action Guidance
+            {% endif %}
+          </button>
+        </div>
+
         <div class="callout callout--warning">
-          <span class="callout__icon" aria-hidden="true">🔜</span>
+          <span class="callout__icon" aria-hidden="true">⚠️</span>
           <div class="callout__body">
-            <strong>{% if lang == 'hi' %}Phase 2 में उपलब्ध{% else %}Available in Phase 2{% endif %}</strong>
             <p>
               {% if lang == 'hi' %}
-                AI-आधारित कानूनी श्रेणी पहचान Phase 2 में उपलब्ध होगी।
-                अभी के लिए कृपया <a href="{{ url_for('main.resources') }}">कानूनी संसाधन</a> देखें।
+                <strong>अस्वीकरण:</strong> परिणाम केवल प्रक्रियात्मक सूचना और नागरिक अधिकारों के मार्गदर्शन के लिए हैं। किसी औपचारिक वाद के लिए अधिवक्ता से संपर्क करें।
               {% else %}
-                AI-powered legal category identification will be available in Phase 2.
-                For now, please browse our <a href="{{ url_for('main.resources') }}">Legal Resources</a>.
+                <strong>Disclaimer:</strong> Results provide procedural information and statutory remedies only. For court representation, consult an advocate.
               {% endif %}
             </p>
           </div>
         </div>
-
-        <button type="submit" class="btn btn--primary btn--full" disabled aria-disabled="true">
-          {% if lang == 'hi' %}विश्लेषण करें (Phase 2){% else %}Analyse Issue (Phase 2){% endif %}
-        </button>
 
       </form>
     </div>
@@ -134,12 +144,13 @@
 
 {% block extra_scripts %}
 <script>
-  // Character counter for the issue textarea
-  // This is self-contained vanilla JS — no external library needed.
   (function () {
+    const form     = document.getElementById('issue-form');
     const textarea = document.getElementById('issue-text');
+    const category = document.getElementById('issue-category');
     const counter  = document.getElementById('char-counter');
     const errorEl  = document.getElementById('issue-error');
+    const submitBtn = document.getElementById('submit-btn');
     const maxChars = {{ max_chars }};
 
     if (!textarea || !counter) return;
@@ -148,27 +159,29 @@
       const len = textarea.value.length;
       counter.textContent = len + ' / ' + maxChars;
 
-      // Visual warning at 90% capacity
       counter.classList.toggle('char-counter--warning', len >= maxChars * 0.9);
       counter.classList.toggle('char-counter--error',   len >= maxChars);
     }
 
-    function validateOnBlur() {
-      const val = textarea.value.trim();
-      if (!val) {
-        errorEl.textContent = '{% if lang == "hi" %}समस्या का विवरण खाली नहीं हो सकता।{% else %}Issue description cannot be empty.{% endif %}';
+    textarea.addEventListener('input', updateCounter);
+
+    form.addEventListener('submit', function (e) {
+      const textVal = textarea.value.trim();
+      const catVal  = category.value.trim();
+
+      if (!textVal && !catVal) {
+        e.preventDefault();
+        errorEl.textContent = '{% if lang == "hi" %}कृपया अपनी समस्या का विवरण लिखें या श्रेणी का चयन करें।{% else %}Please enter an issue description or select a category.{% endif %}';
         errorEl.hidden = false;
-        textarea.setAttribute('aria-invalid', 'true');
-      } else {
-        errorEl.hidden = true;
-        textarea.removeAttribute('aria-invalid');
+        textarea.focus();
+        return;
       }
-    }
 
-    textarea.addEventListener('input',  updateCounter);
-    textarea.addEventListener('blur',   validateOnBlur);
+      errorEl.hidden = true;
+      submitBtn.disabled = true;
+      submitBtn.textContent = '{% if lang == "hi" %}विश्लेषण जारी है...{% else %}Analyzing issue...{% endif %}';
+    });
 
-    // Initialise
     updateCounter();
   }());
 </script>

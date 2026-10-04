@@ -77,5 +77,7 @@ def create_app(config_class=None):
         # Import models so SQLAlchemy knows about them before create_all()
         from app import models  # noqa: F401
         db.create_all()
+        from app.knowledge_base import seed_knowledge_base
+        seed_knowledge_base()
 
     return app
