@@ -80,52 +80,89 @@ _KEYWORD_MAP = [
     ("domestic_violence", [
         "domestic violence", "घरेलू हिंसा", "wife beating", "husband beating",
         "abuse at home", "घर में मार", "domestic abuse", "marital violence",
-        "घरेलू उत्पीड़न",
+        "घरेलू उत्पीड़न", "torture at home", "harassment by in-laws",
+        "ससुराल में प्रताड़ना", "पति द्वारा मारपीट", "शारीरिक प्रताड़ना",
+        "protection order", "संरक्षण आदेश", "dv act",
+    ]),
+    ("rti", [
+        "rti", "right to information", "सूचना का अधिकार", "information request",
+        "government document", "सरकारी दस्तावेज", "application rejected",
+        "pio", "cpio", "spio", "public information officer", "जन सूचना अधिकारी",
+        "transparency", "first appeal", "प्रथम अपील", "second appeal",
+        "द्वितीय अपील", "cic", "sic", "information commissioner",
+        "सूचना आयोग", "सरकारी रिकॉर्ड", "noting sheet", "exam copy",
     ]),
     ("consumer", [
         "consumer", "उपभोक्ता", "defective", "खराब", "refund", "वापसी",
-        "product", "service", "e-commerce", "amazon", "flipkart", "online shopping",
-        "cheating by company", "bill", "overcharge", "insurance claim",
-        "warranty", "वारंटी", "damaged", "repair", "seller", "विक्रेता",
+        "पैसे वापस", "product", "service", "e-commerce", "amazon", "flipkart",
+        "online shopping", "ऑनलाइन शॉपिंग", "cheating by company", "bill",
+        "overcharge", "insurance claim", "बीमा क्लेम", "warranty", "वारंटी",
+        "guarantee", "गारंटी", "damaged", "repair", "seller", "विक्रेता",
+        "shopkeeper", "दुकानदार", "store", "दुकान", "purchase", "खरीदा",
+        "खरीदी", "order", "return", "replacement", "एक्सचेंज", "expiry",
+        "expired", "mrp", "एमआरपी", "adulterated", "मिलावट", "deficiency in service",
+        "flight cancellation", "ticket refund", "hotel booking", "ग्राहकों",
+        "ग्राहक", "उपभोक्ता फोरम",
     ]),
     ("property", [
-        "property", "संपत्ति", "land", "जमीन", "plot", "rent", "किराया",
-        "tenant", "किरायेदार", "eviction", "बेदखल", "registry", "rera",
-        "boundary dispute", "encroachment", "अतिक्रमण", "lease",
+        "property", "संपत्ति", "land", "जमीन", "plot", "प्लाट", "प्लॉट",
+        "rent", "किराया", "tenant", "किरायेदार", "landlord", "मकान मालिक",
+        "eviction", "बेदखल", "बेदखली", "registry", "रजिस्ट्री", "rera", "रेरा",
+        "builder", "बिल्डर", "flat", "फ्लैट", "apartment", "house", "मकान",
+        "boundary dispute", "सीमा विवाद", "encroachment", "अतिक्रमण", "lease",
+        "पट्टा", "illegal possession", "अवैध कब्जा", "sale deed", "बैनामा",
+        "mutation", "दाखिल खारिज", "khata", "khasra", "खसरा", "खतौनी",
+        "ancestral property", "पैतृक संपत्ति", "partition", "बंटवारा",
+    ]),
+    ("labour", [
+        "salary", "वेतन", "तनख्वाह", "wages", "मजदूरी", "employment", "job",
+        "naukri", "नौकरी", "fired", "terminate", "termination", "निकाला",
+        "labour", "श्रम", "pf", "epf", "provident fund", "भविष्य निधि",
+        "esi", "esic", "workplace", "harassment at work", "maternity", "gratuity",
+        "ग्रेच्युटी", "unpaid salary", "pending salary", "बकाया वेतन", "overtime",
+        "relieving letter", "experience letter", "notice period", "contractor",
+        "ठेकेदार", "employer", "नियोक्ता", "कर्मचारी", "श्रमिक", "बोनस", "bonus",
+        "layoff", "retrenchment", "छंटनी",
     ]),
     ("family", [
         "divorce", "तलाक", "maintenance", "गुजारा भत्ता", "custody", "बच्चा",
         "alimony", "dowry", "दहेज", "inheritance", "विरासत", "adoption",
-        "marriage", "शादी", "matrimonial", "separation", "husband", "wife",
-    ]),
-    ("labour", [
-        "salary", "वेतन", "wages", "employment", "job", "naukri", "नौकरी",
-        "fired", "terminate", "labour", "श्रम", "pf", "provident fund",
-        "esi", "workplace", "harassment at work", "maternity", "gratuity",
-    ]),
-    ("rti", [
-        "rti", "right to information", "सूचना का अधिकार", "information",
-        "government document", "सरकारी दस्तावेज", "application rejected",
-        "pio", "public information", "transparency",
+        "गोद लेना", "marriage", "शादी", "विवाह", "matrimonial", "separation",
+        "पति", "पत्नी", "husband", "wife", "spouse", "child custody",
+        "बच्चों की कस्टडी", "in-laws", "ससुराल", "succession", "उत्तराधिकार",
+        "will", "वसीयत", "पारिवारिक विवाद",
     ]),
     ("criminal", [
-        "fir", "police", "पुलिस", "arrest", "गिरफ्तार", "bail", "जमानत",
-        "theft", "चोरी", "fraud", "धोखा", "cheating", "assault", "complaint",
-        "criminal", "आपराधिक", "murder", "cybercrime", "harassment",
+        "fir", "police", "पुलिस", "thana", "थाना", "chowki", "चौकी",
+        "arrest", "गिरफ्तार", "गिरफ्तारी", "bail", "जमानत", "theft", "चोरी",
+        "fraud", "धोखा", "धोखाधड़ी", "cheating", "assault", "मारपीट",
+        "complaint", "criminal", "आपराधिक", "murder", "हत्या", "cybercrime",
+        "साइबर अपराध", "harassment", "उत्पीड़न", "blackmail", "ब्लैकमेल",
+        "extortion", "रंगदारी", "threat", "धमकी", "upi fraud", "ऑनलाइन ठगी",
+        "cyber fraud", "scam", "घोटाला", "hit and run", "accident", "हादसा",
+        "police refusal", "zero fir",
     ]),
 ]
 
 
 def keyword_classify(text: str) -> str:
     """
-    Classify issue text using simple keyword matching.
+    Classify issue text using keyword matching with safe boundary checks.
+    Uses regex word boundaries for ASCII terms to prevent substring false-positives
+    (e.g., 'helpful' matching 'pf' or 'parents' matching 'rent').
     Returns a category slug. Falls back to 'other' if nothing matches.
     """
     lower = text.lower()
     for slug, keywords in _KEYWORD_MAP:
         for kw in keywords:
-            if kw in lower:
-                return slug
+            if kw.isascii():
+                # Word/phrase boundary matching for ASCII terms
+                if re.search(r"\b" + re.escape(kw) + r"\b", lower):
+                    return slug
+            else:
+                # Substring matching for Devanagari / Hindi characters
+                if kw in lower:
+                    return slug
     return "other"
 
 
@@ -166,10 +203,10 @@ def classify_issue(issue_text: str) -> dict:
             genai.configure(api_key=api_key)
 
             model = genai.GenerativeModel(
-                model_name="gemini-1.5-flash",
+                model_name="gemini-flash-latest",
                 generation_config={
                     "temperature": 0.0,        # deterministic classification
-                    "max_output_tokens": 20,   # slug only — very short
+                    "max_output_tokens": 300,  # slug with thinking token headroom
                     "top_p": 1,
                 },
                 safety_settings=[
@@ -184,14 +221,21 @@ def classify_issue(issue_text: str) -> dict:
             response = model.generate_content(prompt)
             raw = response.text.strip().lower()
 
-            # Extract the slug (ignore any accidental extra words)
-            slug = re.sub(r"[^a-z_]", "", raw.split()[0]) if raw.split() else ""
+            # Clean Markdown code fences or JSON formatting if present
+            cleaned_raw = re.sub(r"```[a-zA-Z]*", "", raw).replace("```", "").strip()
 
-            if slug in VALID_SLUGS:
+            # Extract any valid slug token (handles prefixes like 'Category: consumer')
+            tokens = re.findall(r"[a-z_]+", cleaned_raw)
+            valid_tokens = [t for t in tokens if t in VALID_SLUGS]
+
+            if valid_tokens:
+                # If specific category slugs are present, prefer them over 'other'
+                specific_tokens = [t for t in valid_tokens if t != "other"]
+                slug = specific_tokens[0] if specific_tokens else valid_tokens[0]
                 return {"slug": slug, "method": "gemini", "error": ""}
             else:
                 # Gemini gave an unexpected response — use keyword fallback
-                logger.warning("Gemini returned unexpected slug %r; using keyword fallback", slug)
+                logger.warning("Gemini returned unexpected slug %r; using keyword fallback", raw)
                 fallback_slug = keyword_classify(issue_text)
                 return {"slug": fallback_slug, "method": "keyword", "error": ""}
 

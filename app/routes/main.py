@@ -141,11 +141,23 @@ def issue():
             classification_result = classify_issue(issue_text)
             matched_slug = classification_result.get("slug", "other")
             method = classification_result.get("method", "keyword")
+
+            # Fallback to citizen's manual selection if automatic classification
+            # returned "other" or an invalid slug, and user explicitly chose a specific category
+            if (matched_slug not in VALID_SLUGS or matched_slug == "other") and (manual_category in VALID_SLUGS and manual_category != "other"):
+                matched_slug = manual_category
+                method = "manual"
+                classification_result["slug"] = manual_category
+                classification_result["method"] = "manual"
         elif manual_category in VALID_SLUGS:
             matched_slug = manual_category
             method = "manual"
             classification_result = {"slug": manual_category, "method": "manual", "error": ""}
         else:
+            matched_slug = "other"
+            method = "fallback"
+
+        if matched_slug not in VALID_SLUGS:
             matched_slug = "other"
             method = "fallback"
 
@@ -184,7 +196,7 @@ def guidance_dashboard(slug):
       - Category title and description
       - Numbered, actionable procedural guidance
       - Official statutory sources & hyperlinks
-      - Specific departmental helplines
+      - Specific departmental helplines (prioritized above general ones)
       - Legal disclaimer
     """
     lang = get_language()
@@ -213,6 +225,13 @@ def guidance_dashboard(slug):
     # Retrieve all helplines and filter relevant ones
     all_helplines = Helpline.query.all()
     relevant_helplines = [h for h in all_helplines if h.is_relevant_to(slug)]
+
+    # Prioritize category-specific helplines above general/unspecified helplines
+    def _helpline_sort_priority(h):
+        cats = [c.strip() for c in (h.relevant_categories or "").split(",") if c.strip()]
+        return (0 if slug in cats else 1, h.id)
+
+    relevant_helplines.sort(key=_helpline_sort_priority)
 
     method = request.args.get("method", "direct")
 

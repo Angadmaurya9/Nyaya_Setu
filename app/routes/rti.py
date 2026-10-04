@@ -99,9 +99,9 @@ def build_rti_text(data: dict) -> str:
     urgency_clause = ""
     if life_or_liberty:
         urgency_clause = (
-            "\n[URGENT: This application concerns the Life and Liberty of a citizen. "
+            "\n\n[URGENT: This application concerns the Life and Liberty of a citizen. "
             "In accordance with the proviso to Section 7(1) of the RTI Act, 2005, the requested "
-            "information must be provided within 48 hours of receipt.]\n"
+            "information must be provided within 48 hours of receipt.]"
         )
 
     draft = f"""FORM OF APPLICATION FOR SEEKING INFORMATION UNDER SECTION 6(1)
@@ -113,6 +113,7 @@ To,
 {department_address}
 
 1. Full Name of the Applicant: {applicant_name}
+
 2. Address for Correspondence:
    {applicant_address}
    Phone / Mobile: {phone or 'N/A'}
@@ -121,8 +122,8 @@ To,
 3. Particulars of Information Sought:
    (a) Subject of Information: {subject}
    (b) Detailed Particulars of Information Requested:
-{info_text_block}
-{urgency_clause}
+{info_text_block}{urgency_clause}
+
    (c) Period to which the information relates: As specified in the points above
    (d) Preferred mode of receiving information: By {delivery_mode}
 
@@ -237,9 +238,11 @@ def generate():
 def export_pdf():
     """
     Generates a clean, professional, print-ready A4 PDF of the RTI draft using ReportLab.
-    Hardened against XML entity parsing errors, malformed markup, and memory exhaustion.
+    Hardened against XML entity parsing errors, malformed markup, line ending variations,
+    and memory exhaustion.
     """
     import html
+    import re
 
     draft_text = request.form.get("draft_text", "").strip()
     applicant_name = request.form.get("applicant_name", "Applicant").strip()
@@ -303,16 +306,25 @@ def export_pdf():
         story.append(Paragraph("<b>[Under Section 6(1) of the RTI Act, 2005]</b>", ParagraphStyle("SubTitle", parent=title_style, fontSize=10, leading=12, spaceAfter=10)))
         story.append(HRFlowable(width="100%", thickness=1, color=colors.black, spaceAfter=12))
 
-        # Convert draft blocks into styled paragraphs
-        paragraphs_raw = draft_text.split("\n\n")
+        # 1. Normalize line endings: browsers submit textareas with CRLF (\r\n) per HTML spec
+        normalized_text = draft_text.replace("\r\n", "\n").replace("\r", "\n").strip()
+
+        # 2. Strip standard header only from the start of the draft to avoid duplicate Title Block
+        header_patterns = [
+            r"^\s*FORM OF APPLICATION FOR SEEKING INFORMATION UNDER SECTION 6\(1\)[\s\n]*(OF THE RIGHT TO INFORMATION ACT, 2005)?[\s\n]*",
+            r"^\s*APPLICATION FOR SEEKING INFORMATION UNDER THE RIGHT TO INFORMATION ACT, 2005[\s\n]*",
+            r"^\s*APPLICATION UNDER SECTION 6\(1\) OF RTI ACT[\s\n]*",
+        ]
+        clean_text = normalized_text
+        for pat in header_patterns:
+            clean_text = re.sub(pat, "", clean_text, flags=re.IGNORECASE).strip()
+
+        # 3. Convert draft blocks into styled paragraphs
+        paragraphs_raw = re.split(r"\n{2,}", clean_text)
 
         for block in paragraphs_raw:
             clean_block = block.strip()
             if not clean_block:
-                continue
-
-            # Skip duplicate title header if already in raw text
-            if "FORM OF APPLICATION FOR SEEKING INFORMATION" in clean_block:
                 continue
 
             # Safe HTML escape: prevents XML parsing crashes on '<', '>', '&'
@@ -321,12 +333,11 @@ def export_pdf():
             formatted_html = escaped_text.replace("\n", "<br/>")
 
             # Bold standard numbered section heads if present
-            if len(formatted_html) >= 3 and (formatted_html.startswith("1.") or formatted_html.startswith("2.") or formatted_html.startswith("3.") or formatted_html.startswith("4.") or formatted_html.startswith("5.")):
-                p = Paragraph(f"<b>{formatted_html[:3]}</b>{formatted_html[3:]}", body_style)
-            else:
-                p = Paragraph(formatted_html, body_style)
+            if re.match(r"^[1-5]\.", clean_block):
+                parts = formatted_html.split(".", 1)
+                formatted_html = f"<b>{parts[0]}.</b>{parts[1]}"
 
-            story.append(p)
+            story.append(Paragraph(formatted_html, body_style))
             story.append(Spacer(1, 4))
 
         # Trailing line & footer disclaimer
