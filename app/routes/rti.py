@@ -330,9 +330,8 @@ def export_pdf():
             story.append(Spacer(1, 4))
 
         # Trailing line & footer disclaimer
-        story.append(Spacer(1, 14))
         story.append(HRFlowable(width="100%", thickness=0.5, color=colors.gray, spaceAfter=8))
-        story.append(Paragraph("Generated via NyayaSetu Citizen Rights Portal — Please verify all particulars and attach statutory ₹10 fee before submitting.", footer_note_style))
+        story.append(Paragraph("NyayaSetu is a civic rights and action guidance system for general informational purposes only and does not constitute legal advice. Please verify all particulars and applicable statutory rules before submission.", footer_note_style))
 
         # Build PDF with graceful error recovery
         doc.build(story)

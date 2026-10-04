@@ -206,19 +206,20 @@
 
     </div>{# /.guidance-layout #}
 
-    {# Prominent Legal Disclaimer #}
+    {# Contextual Legal Notice #}
     <div class="callout callout--warning mt-section">
       <span class="callout__icon" aria-hidden="true">⚠️</span>
       <div class="callout__body">
         <strong>
-          {% if lang == 'hi' %}महत्वपूर्ण कानूनी अस्वीकरण (Legal Information Disclaimer){% else %}Important Notice & Legal Disclaimer{% endif %}
+          {% if lang == 'hi' %}विधिक सूचना (Legal Notice){% else %}Legal Notice{% endif %}
         </strong>
         <p>
           {% if lang == 'hi' %}
-            उपरोक्त जानकारी केवल सामान्य प्रक्रियात्मक जागरूकता और नागरिक अधिकारों के मार्गदर्शन के उद्देश्य से दी गई है। यह पेशेवर कानूनी सलाह नहीं है और कोई वकील-मुवक्किल संबंध स्थापित नहीं करती। किसी भी कानूनी कार्यवाही, याचिका दाखिल करने या विवाद में औपचारिक कदम उठाने से पूर्व योग्य अधिवक्ता से सलाह अवश्य लें।
+            यह मार्गदर्शन केवल सूचनात्मक है, कानूनी सलाह नहीं। कृपया संबंधित कानूनों और प्रक्रियाओं को आधिकारिक प्राधिकारियों से सत्यापित करें।
           {% else %}
-            The guidance provided above is for general statutory awareness and citizen self-help procedures only. It does not constitute formal legal advice and creates no attorney–client relationship. Always consult a licensed advocate or legal aid counsel before taking formal legal action in court.
+            This guidance is informational, not legal advice. Please verify applicable laws and procedures with official authorities.
           {% endif %}
+          <a href="{{ url_for('legal.disclaimer') }}">{% if lang == 'hi' %}विस्तृत अस्वीकरण{% else %}Full Disclaimer{% endif %}</a>
         </p>
       </div>
     </div>

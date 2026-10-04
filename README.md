@@ -41,7 +41,7 @@ NyayaSetu is a web application designed to help everyday citizens navigate the I
 
 ---
 
-## ✨ Features (Phase 1, Phase 2 & Phase 3)
+## ✨ Features (Phases 1 through 5)
 
 | Feature | Phase | Status |
 |---------|-------|--------|
@@ -66,7 +66,11 @@ NyayaSetu is a web application designed to help everyday citizens navigate the I
 | Dedicated Print Styles (`window.print()` Clean Output) | Phase 3 | ✅ Completed |
 | Statutory Fee & BPL Exemption Handling (Section 7(5)) | Phase 3 | ✅ Completed |
 | Proviso to Section 7(1) Life or Liberty 48-Hour Urgency Clause | Phase 3 | ✅ Completed |
-
+| Security Hardening: XSS escaping, XML sanitization, Header policies | Phase 4 | ✅ Completed |
+| Robust Error Handling: Mocked API timeouts, Fallback logging | Phase 4 | ✅ Completed |
+| Accessibility Hardening: ARIA attributes, semantic headings, contrast | Phase 4 | ✅ Completed |
+| Automated Quality & Regression Suites (25/25 passing tests) | Phase 4 | ✅ Completed |
+| Project Defense & Viva Documentation, Deployment & Demonstration Scripts | Phase 5 | ✅ Completed |
 
 ---
 
@@ -244,24 +248,66 @@ Open your browser and visit: **http://127.0.0.1:5000**
 
 ## 🧪 Testing Instructions
 
-Run the automated test suite with standard Python `unittest`:
+Run the automated test suites using standard Python `unittest`:
 
 ```bash
+# Run all test suites across Phases 2, 3, and 4 (25 total tests)
 python tests_phase2.py
+python tests_phase3.py
+python tests_phase4.py
 ```
 
-### Test Suite Coverage:
-1. `test_01_knowledge_base_seeding`: Asserts that all 8 categories, verified citations, action steps, and 8 helplines are present in the database.
-2. `test_02_classification_engine`: Tests classification against 11 test cases in both English and Hindi.
-3. `test_03_problem_to_action_post_flow`: Verifies form submission, 302 redirection, and dashboard rendering.
-4. `test_04_privacy_guarantee`: Proves that sensitive raw user text is never saved in the database.
-5. `test_05_scope_correction_schemes_redirect`: Tests that out-of-scope `/schemes` URL redirects to `/issue`.
-6. `test_06_direct_guidance_routes`: Verifies all 8 guidance routes load in both Hindi and English (16 test points).
-7. `test_07_core_informational_routes`: Tests all primary informational and legal pages.
+### Comprehensive Test Coverage (25 Automated Tests):
+- **Phase 2 Suite (`tests_phase2.py` - 7 tests):**
+  1. Database model & statutory knowledge base seeding (8 categories, 8 helplines).
+  2. Gemini classifier & bilingual keyword fallback accuracy (11 test cases in EN & HI).
+  3. Problem-to-action POST flow (302 redirect and guidance rendering).
+  4. Privacy verification (raw user text is strictly never stored in DB).
+  5. Scope correction (/schemes safely redirected to /issue).
+  6. Direct bilingual guidance routing (all 8 slugs in EN and HI).
+  7. Core informational routes status.
+
+- **Phase 3 Suite (`tests_phase3.py` - 7 tests):**
+  1. RTI Generator route accessibility (`/rti/`).
+  2. RTI draft builder logic with required statutory sections.
+  3. Life & liberty proviso handling (48-hour clause under Section 7(1)).
+  4. Statutory fee exemption (BPL status under Section 7(5)).
+  5. Form input validation and error handling for missing fields.
+  6. ReportLab PDF generation and valid `%PDF` binary output.
+  7. Zero-retention privacy for RTI personal details.
+
+- **Phase 4 Suite (`tests_phase4.py` - 11 tests):**
+  1. Core application routes & HTTP 200 checks.
+  2. Structured guidance retrieval and graceful fallback on invalid slugs.
+  3. Knowledge base data integrity and official HTTPS source citations.
+  4. Mocked Gemini API timeouts and resilient keyword fallback.
+  5. Graceful recovery from mocked AI hallucinated/invalid slugs.
+  6. Empty and excessively long input validation (1000 character limit).
+  7. XSS, HTML, and script injection sanitization.
+  8. Privacy assertion across the complete database state.
+  9. Production configuration debug safety check.
+  10. PDF generator special character handling (`<`, `>`, `&`, multi-page flow).
+  11. Custom 404 error page and user-friendly error recovery.
 
 ---
 
-## 🎯 Viva & Evaluation Talking Points (for BCA Students)
+## 🚀 Production Deployment
+
+NyayaSetu is production-ready and includes a standard WSGI entry point (`wsgi.py`):
+
+```bash
+# 1. Set production environment variables in .env
+FLASK_ENV=production
+FLASK_DEBUG=0
+SECRET_KEY=your-strong-random-secret-key
+
+# 2. Run with Gunicorn WSGI server
+gunicorn wsgi:app --workers 4 --bind 0.0.0.0:8000
+```
+
+---
+
+## 🎯 Viva & Evaluation Talking Points
 
 1. **Why Flask Application Factory?**  
    Enables creating application instances with different configurations (`DevelopmentConfig`, `TestingConfig`, `ProductionConfig`) cleanly without global side-effects.
@@ -274,16 +320,15 @@ python tests_phase2.py
 
 ---
 
-## 🗺️ Roadmap: Phase 3 (Future Scope)
+## 🗺️ Future Scope & Scaling
 
-The following items are planned for Phase 3:
-- Offline / PWA support with localized offline first-aid legal checklists.
-- PDF procedural action guide generation (downloadable checklist for printing).
-- State-specific police and DLSA jurisdiction locator.
-- Direct voice input for citizens who cannot read or write.
+- **PWA & Offline First:** Localized service worker caching of statutory checklists for rural areas without internet.
+- **Multilingual Expansion:** Integration with Bhashini AI / IndicTrans to cover all 22 official languages of India.
+- **State-Specific Jurisdiction:** Geolocation mapping to district-level DLSA offices and police jurisdictions.
+- **Voice Assistance:** Speech-to-text input for citizens with low literacy levels.
 
 ---
 
 ## 📄 License & Attribution
 
-Developed as a BCA mini-project for educational and civic awareness purposes. Grounded in publicly available statutes and portals of the Government of India.
+NyayaSetu: Smart Civic Rights & Action Guidance System is an educational civic-tech initiative grounded in publicly available statutes and portals of the Government of India.

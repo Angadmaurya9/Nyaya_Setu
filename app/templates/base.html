@@ -14,7 +14,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="{% block meta_description %}NyayaSetu — Bridging Citizens and Justice. Free legal information and government scheme guidance for Indian citizens.{% endblock %}" />
+  <meta name="description" content="{% block meta_description %}NyayaSetu: Smart Civic Rights & Action Guidance System — Bridging Citizens and Justice. Free, privacy-first legal awareness and statutory action guidance for Indian citizens.{% endblock %}" />
 
   {# ── Security headers via meta (complement server-side headers in Phase 2) ── #}
   <meta http-equiv="X-Content-Type-Options" content="nosniff" />
@@ -26,8 +26,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
-  {# ── Main stylesheet ── #}
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+  {# ── Main stylesheet (with cache buster) ── #}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}?v=20261004c" />
 
   {% block extra_head %}{% endblock %}
 </head>
@@ -151,67 +151,64 @@
   <footer class="footer" role="contentinfo">
     <div class="container footer__inner">
 
-      <div class="footer__brand">
-        <span class="footer__logo-icon" aria-hidden="true">⚖️</span>
-        <span class="footer__brand-name">{{ app_name }}</span>
-        <p class="footer__tagline">
-          {% if lang == 'hi' %}नागरिकों और न्याय के बीच सेतु{% else %}Bridging Citizens and Justice{% endif %}
-        </p>
-      </div>
-
-      <nav class="footer__links" aria-label="Footer navigation">
-        <div class="footer__link-group">
-          <h3 class="footer__link-heading">
-            {% if lang == 'hi' %}पृष्ठ{% else %}Pages{% endif %}
-          </h3>
-          <ul>
-            <li><a href="{{ url_for('main.index') }}">{% if lang == 'hi' %}होम{% else %}Home{% endif %}</a></li>
-            <li><a href="{{ url_for('main.issue') }}">{% if lang == 'hi' %}समस्या समाधान{% else %}Action Guidance{% endif %}</a></li>
-            <li><a href="{{ url_for('rti.generator') }}">{% if lang == 'hi' %}RTI जनरेटर{% else %}RTI Generator{% endif %}</a></li>
-            <li><a href="{{ url_for('main.resources') }}">{% if lang == 'hi' %}संसाधन{% else %}Resources{% endif %}</a></li>
-            <li><a href="{{ url_for('main.about') }}">{% if lang == 'hi' %}हमारे बारे में{% else %}About{% endif %}</a></li>
-          </ul>
+      {# Column 1: Branding #}
+      <div class="footer__col footer__col--brand">
+        <div class="footer__brand-block">
+          <span class="footer__logo-icon" aria-hidden="true">⚖️</span>
+          <div class="footer__brand-info">
+            <span class="footer__brand-name">NyayaSetu</span>
+            <span class="footer__brand-descriptor">Smart Civic Rights &amp; Action Guidance System</span>
+            <p class="footer__tagline">
+              {% if lang == 'hi' %}नागरिकों और न्याय के बीच सेतु{% else %}Bridging Citizens and Justice{% endif %}
+            </p>
+          </div>
         </div>
-        <div class="footer__link-group">
-          <h3 class="footer__link-heading">
-            {% if lang == 'hi' %}कानूनी{% else %}Legal{% endif %}
-          </h3>
-          <ul>
-            <li><a href="{{ url_for('legal.disclaimer') }}">{% if lang == 'hi' %}अस्वीकरण{% else %}Disclaimer{% endif %}</a></li>
-            <li><a href="{{ url_for('legal.privacy') }}">{% if lang == 'hi' %}गोपनीयता नीति{% else %}Privacy Policy{% endif %}</a></li>
-            <li><a href="{{ url_for('legal.terms') }}">{% if lang == 'hi' %}उपयोग की शर्तें{% else %}Terms of Use{% endif %}</a></li>
-            <li><a href="{{ url_for('contact.contact') }}">{% if lang == 'hi' %}संपर्क{% else %}Contact{% endif %}</a></li>
-          </ul>
-        </div>
-      </nav>
-
-    </div>
-
-    {# Disclaimer notice — shown on every page #}
-    <div class="footer__disclaimer">
-      <div class="container">
-        <p>
+        <p class="footer__brand-summary">
           {% if lang == 'hi' %}
-            ⚠️ <strong>अस्वीकरण:</strong> NyayaSetu केवल सामान्य कानूनी जानकारी प्रदान करता है।
-            यह कानूनी सलाह नहीं है और वकील-मुवक्किल संबंध नहीं बनाता।
-            कानूनी सलाह के लिए किसी योग्य अधिवक्ता से मिलें।
+            भारतीय नागरिकों के लिए निःशुल्क, गोपनीयता-प्रथम कानूनी जागरूकता और सांविधिक कार्रवाई मार्गदर्शन।
           {% else %}
-            ⚠️ <strong>Disclaimer:</strong> NyayaSetu provides general legal information only.
-            This is not legal advice and does not create a lawyer–client relationship.
-            Consult a qualified advocate for advice on your specific situation.
+            Free, privacy-first legal awareness and statutory action guidance for Indian citizens.
           {% endif %}
         </p>
       </div>
+
+      {# Column 2: Explore #}
+      <div class="footer__col footer__col--links">
+        <h3 class="footer__col-heading">
+          {% if lang == 'hi' %}एक्सप्लोर{% else %}Explore{% endif %}
+        </h3>
+        <ul class="footer__nav-list">
+          <li><a href="{{ url_for('main.index') }}">{% if lang == 'hi' %}होम{% else %}Home{% endif %}</a></li>
+          <li><a href="{{ url_for('main.issue') }}">{% if lang == 'hi' %}समस्या समाधान{% else %}Action Guidance{% endif %}</a></li>
+          <li><a href="{{ url_for('rti.generator') }}">{% if lang == 'hi' %}RTI जनरेटर{% else %}RTI Generator{% endif %}</a></li>
+          <li><a href="{{ url_for('main.resources') }}">{% if lang == 'hi' %}संसाधन{% else %}Resources{% endif %}</a></li>
+          <li><a href="{{ url_for('main.about') }}">{% if lang == 'hi' %}हमारे बारे में{% else %}About{% endif %}</a></li>
+        </ul>
+      </div>
+
+      {# Column 3: Legal & Help #}
+      <div class="footer__col footer__col--links">
+        <h3 class="footer__col-heading">
+          {% if lang == 'hi' %}कानूनी व सहायता{% else %}Legal &amp; Help{% endif %}
+        </h3>
+        <ul class="footer__nav-list">
+          <li><a href="{{ url_for('legal.disclaimer') }}">{% if lang == 'hi' %}अस्वीकरण{% else %}Disclaimer{% endif %}</a></li>
+          <li><a href="{{ url_for('legal.privacy') }}">{% if lang == 'hi' %}गोपनीयता नीति{% else %}Privacy Policy{% endif %}</a></li>
+          <li><a href="{{ url_for('legal.terms') }}">{% if lang == 'hi' %}उपयोग की शर्तें{% else %}Terms of Use{% endif %}</a></li>
+          <li><a href="{{ url_for('contact.contact') }}">{% if lang == 'hi' %}संपर्क{% else %}Contact{% endif %}</a></li>
+        </ul>
+      </div>
+
     </div>
 
     <div class="footer__bottom">
       <div class="container">
         <p>
-          &copy; {{ 2025 }} {{ app_name }}.
+          &copy; {{ 2025 }} NyayaSetu: Smart Civic Rights &amp; Action Guidance System.
           {% if lang == 'hi' %}
-            BCA परियोजना — केवल शैक्षिक उद्देश्यों के लिए।
+            नागरिकों और न्याय के बीच सेतु।
           {% else %}
-            BCA Project — For educational purposes only.
+            Bridging Citizens and Justice.
           {% endif %}
         </p>
       </div>
